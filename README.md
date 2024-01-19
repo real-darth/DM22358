@@ -15,3 +15,9 @@ And for developmnet dependencies do :
 ```bash
 pip install ".[dev]"
 ```
+
+Moreover, you are encouraged to install the pre-commit hooks, so that black and the flake8 run before every commit:
+```bash
+pre-commit install
+```
+
