@@ -1,0 +1,23 @@
+[project]
+name = "kth_intro_hpc_course"
+description = "All assignmets from intro to HPC course at kth "
+version = "0.1.0"
+authors = [
+    { name = "Íñigo Aréjula", email = "ingoaa@kth.se"},
+]
+dependencies = [
+    "ipython"
+]
+readme = "README.md"
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit",
+    "black",
+    "flake8"
+    
+]
+
+
+[tool.black]
+line-length = 100
