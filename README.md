@@ -1,4 +1,4 @@
-# DM22358
+# DM2358
 HPC course, assignments and project
 ```bash
 python3.9 -m venv venv  
