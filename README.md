@@ -23,5 +23,5 @@ pre-commit install
 ```
 
 ## Useful vs-code configuration
-Install the extensions `ms-python.black-formatter`, `ms-python.python` and `ms-python.vscode-pylance
+Install the extensions `ms-python.black-formatter`, `ms-python.python` and `ms-python.vscode-pylance`
 
