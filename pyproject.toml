@@ -12,7 +12,8 @@ readme = "README.md"
 dev = [
     "pre-commit",
     "black",
-    "flake8"
+    "flake8",
+    "importlib-metadata==4.13.0",
     
 ]
 
