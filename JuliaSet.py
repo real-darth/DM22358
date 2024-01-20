@@ -2,6 +2,8 @@
 import time
 from functools import wraps
 
+# from line_profiler import profile
+
 # area of complex space to investigate
 x1, x2, y1, y2 = -1.8, 1.8, -1.8, 1.8
 c_real, c_imag = -0.62772, -0.42193
@@ -20,6 +22,7 @@ def timefn(fn):
     return measure_time
 
 
+# @profile
 def calc_pure_python(desired_width, max_iterations):
     """Create a list of complex coordinates (zs) and complex parameters (cs),
     build Julia set"""
