@@ -1,0 +1,55 @@
+Timer unit: 1e-06 s
+
+Total time: 993.964 s
+File: JuliaSet.py
+Function: calc_pure_python at line 24
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    24                                           @profile
+    25                                           def calc_pure_python(desired_width, max_iterations):
+    26                                               """Create a list of complex coordinates (zs) and complex parameters (cs),
+    27                                               build Julia set"""
+    28         1          1.5      1.5      0.0      x_step = (x2 - x1) / desired_width
+    29         1          0.2      0.2      0.0      y_step = (y1 - y2) / desired_width
+    30         1          0.2      0.2      0.0      x = []
+    31         1          0.1      0.1      0.0      y = []
+    32         1          0.1      0.1      0.0      ycoord = y2
+    33     10002       1096.8      0.1      0.0      while ycoord > y1:
+    34     10001       1014.5      0.1      0.0          y.append(ycoord)
+    35     10001       1109.4      0.1      0.0          ycoord += y_step
+    36         1          0.2      0.2      0.0      xcoord = x1
+    37     10002       1549.7      0.2      0.0      while xcoord < x2:
+    38     10001       1015.5      0.1      0.0          x.append(xcoord)
+    39     10001       1083.2      0.1      0.0          xcoord += x_step
+    40                                               # build a list of coordinates and the initial condition for each cell.
+    41                                               # Note that our initial condition is a constant and could easily be removed,
+    42                                               # we use it to simulate a real-world scenario with several inputs to our
+    43                                               # function
+    44         1          0.2      0.2      0.0      zs = []
+    45         1          0.6      0.6      0.0      cs = []
+    46     10002       1868.2      0.2      0.0      for ycoord in y:
+    47 100030002   17331341.8      0.2      1.7          for xcoord in x:
+    48 100020001   20647993.1      0.2      2.1              zs.append(complex(xcoord, ycoord))
+    49 100020001   22366222.6      0.2      2.3              cs.append(complex(c_real, c_imag))
+    50                                           
+    51         1         22.6     22.6      0.0      print("Length of x:", len(x))
+    52         1          3.2      3.2      0.0      print("Total elements:", len(zs))
+    53         1          2.4      2.4      0.0      start_time = time.time()
+    54         1  933270850.0    9e+08     93.9      output = calculate_z_serial_purepython(max_iterations, zs, cs)
+    55         1          3.8      3.8      0.0      end_time = time.time()
+    56         1          1.2      1.2      0.0      secs = end_time - start_time
+    57         1         32.3     32.3      0.0      print(calculate_z_serial_purepython.__name__ + " took", secs, "seconds")
+    58                                           
+    59                                               # This sum is expected for a 1000^2 grid with 300 iterations
+    60                                               # It ensures that our code evolves exactly as we'd intended
+    61                                               # assert sum(output) == 33219980
+    62                                           
+    63                                               # This sum is expected for a 10000 grid with 300 iterations
+    64                                               # It ensures that our code evolves exactly as we'd intended
+    65         1     339270.7 339270.7      0.0      assert sum(output) == 3323787511
+    66                                           
+    67                                               # desired_width 100
+    68                                               # assert sum(output) == 334236
+
+993.96 seconds - JuliaSet.py:24 - calc_pure_python
