@@ -5,7 +5,8 @@ version = "0.1.0"
 authors = [
     { name = "Íñigo Aréjula", email = "ingoaa@kth.se"},
 ]
-dependencies = []
+dependencies = [
+    "snakeviz"]
 readme = "README.md"
 
 [project.optional-dependencies]
@@ -13,7 +14,6 @@ dev = [
     "pre-commit",
     "black",
     "flake8",
-    "importlib-metadata==4.13.0",
     
 ]
 
