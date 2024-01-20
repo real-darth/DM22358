@@ -6,7 +6,10 @@ authors = [
     { name = "Íñigo Aréjula", email = "ingoaa@kth.se"},
 ]
 dependencies = [
-    "snakeviz"]
+    "snakeviz",
+    "line_profiler",
+    
+    ]
 readme = "README.md"
 
 [project.optional-dependencies]
