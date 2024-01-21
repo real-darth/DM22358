@@ -3,6 +3,7 @@ import time
 from functools import wraps
 
 # from line_profiler import profile
+# from memory_profiler import profile
 
 # area of complex space to investigate
 x1, x2, y1, y2 = -1.8, 1.8, -1.8, 1.8
@@ -63,6 +64,7 @@ def calc_pure_python(desired_width, max_iterations):
 
     # This sum is expected for a 10000 grid with 300 iterations
     # It ensures that our code evolves exactly as we'd intended
+
     assert sum(output) == 3323787511
 
     # desired_width 100
@@ -86,4 +88,4 @@ def calculate_z_serial_purepython(maxiter, zs, cs):
 if __name__ == "__main__":
     # Calculate the Julia set using a pure Python solution with
     # reasonable defaults for a laptop
-    calc_pure_python(desired_width=10000, max_iterations=300)
+    calc_pure_python(desired_width=1000, max_iterations=300)
