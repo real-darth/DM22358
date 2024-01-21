@@ -8,6 +8,9 @@ authors = [
 dependencies = [
     "snakeviz",
     "line_profiler",
+    "memory_profiler",
+    "psutil",
+    "matplotlib",
     
     ]
 readme = "README.md"

@@ -13,13 +13,25 @@ import JuliaSet  # noqa: F401
 # python -m snakeviz calc_pure_python.stat --server
 
 # For the task 1.3.2 I used the line_profiler package
+
 # add the @profile decorator to the function you want to profile
-# python -m kernprof -l JuliaSet.py
+# time python -m kernprof -l JuliaSet.py
 # python -m line_profiler -l JuliaSet.py.lprof
 
 
 # Task 1.4 Memory-profile the Juliaset code. Use the memory_profiler and mprof
 # to profile the computation in JuliaSet code.
+
+# add the @profile decorator to the function you want to profile
+# importing it as `from memory_profiler import profile`
+
+
+# 1.4.1
+# time python -m memory_profiler JuliaSet.py
+
+# 1.4.2
+# time python -m mprof run JuliaSet.py
+# python -m mprof plot <file>.dat
 
 
 # main
