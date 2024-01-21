@@ -71,6 +71,7 @@ def calc_pure_python(desired_width, max_iterations):
     # assert sum(output) == 334236
 
 
+# @profile
 def calculate_z_serial_purepython(maxiter, zs, cs):
     """Calculate output list using Julia update rule"""
     output = [0] * len(zs)
