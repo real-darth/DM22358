@@ -4,7 +4,7 @@ description = "All assignmets from intro to HPC course at kth "
 version = "0.1.0"
 authors = [
     { name = "Íñigo Aréjula", email = "ingoaa@kth.se"},
-    { name = "Elliot Darth", email = "edarth@kth.se"
+    { name = "Elliot Darth", email = "edarth@kth.se"},
 ]
 dependencies = [
     "snakeviz",
