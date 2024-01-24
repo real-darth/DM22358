@@ -69,8 +69,6 @@ def decorator_func(fn):
 # to profile the computation in JuliaSet code.
 
 # add the @profile decorator to the function you want to profile
-# importing it as `from memory_profiler import profile`
-
 
 # 1.4.1
 # time python -m memory_profiler JuliaSet.py
