@@ -1,3 +1,4 @@
+import sys
 from memory_profiler import profile
 
 # Set-ExecutionPolicy Unrestricted -Scope Process
@@ -39,8 +40,8 @@ def run_experiment(num_iterations):
     # Evolve the initial conditions
     for i in range(num_iterations):
         grid = evolve(grid, 0.1)
-
-iter = 20   # arbitrarily value
+        
+iter = int(sys.argv[1])
 # run experiment
 run_experiment(iter)
 

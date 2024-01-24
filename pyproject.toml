@@ -5,6 +5,7 @@ version = "0.1.0"
 authors = [
     { name = "Íñigo Aréjula", email = "ingoaa@kth.se"},
     { name = "Elliot Darth", email = "edarth@kth.se"},
+    { name = "Oskar Grönman", email = "ogronman@kth.se"},
 ]
 dependencies = [
     "snakeviz",
