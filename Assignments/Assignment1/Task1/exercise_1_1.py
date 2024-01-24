@@ -38,12 +38,16 @@ def decorator_func(fn):
    from timeit import default_timer as ittimer
    @wraps(fn)
    def measure_time(*args, **kwargs):
-      t1 = ittimer()
-      result = fn(*args, **kwargs)
-      t2 = ittimer()
-      print(f"@timefn: {fn.__name__} took {t2 - t1} seconds")
+      resultArray = np.array([])
+      for _ in range(5):
+         t1 = ittimer()
+         result = fn(*args, **kwargs)
+         t2 = ittimer()
+         resultArray = np.append(resultArray,[t2-t1])
+         print(f"@timefn: {fn.__name__} took {t2 - t1} seconds")
+      print(f"Average: {np.average(resultArray)}")
+      print(f"Standard deviation: {np.std(resultArray)}")
       return result
-
    return measure_time
 
 
