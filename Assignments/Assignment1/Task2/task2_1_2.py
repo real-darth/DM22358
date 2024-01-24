@@ -2,6 +2,7 @@ import sys
 
 grid_shape = (640, 640)
 
+@profile
 def evolve(grid, dt, D=1.0):
     xmax, ymax = grid_shape
     new_grid = [[0.0] * ymax for x in range(xmax)]
@@ -16,10 +17,7 @@ def evolve(grid, dt, D=1.0):
             new_grid[i][j] = grid[i][j] + D * (grid_xx + grid_yy) * dt
     return new_grid
 
-# I interpret "computation" as this function, but not sure if they
-# want us to look at some more specific part of the code when they say computation
-# like looking at the evolve function only.
-
+@profile
 def run_experiment(num_iterations):
     # Setting up initial conditions 
     xmax, ymax = grid_shape
