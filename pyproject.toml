@@ -14,6 +14,7 @@ dependencies = [
     "psutil",
     "matplotlib",
     "numpy",
+    "prettytable",
 ]
 readme = "README.md"
 
