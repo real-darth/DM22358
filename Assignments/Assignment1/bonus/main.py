@@ -74,14 +74,17 @@ if __name__ == "__main__":
     args = recollect_args()
     # run the script and conccurently measure the cpu usage, when script is done, stop measuring
     script_content = open(args.script).read()
-    script_thread = threading.Thread(target=lambda: exec(script_content))
     cpu_measure_thread = threading.Thread(target=cpu_measure)
 
-    script_thread.start()
     cpu_measure_thread.start()
 
     # Wait for the script thread to finish
-    script_thread.join()
+    try:
+        exec(script_content)
+    except Exception as e:
+        print("Error while executing the script")
+        print(e)
+        exit(1)
     script_finished = True
 
     # print all_cpu_usage in a table
