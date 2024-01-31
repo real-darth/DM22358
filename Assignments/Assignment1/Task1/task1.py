@@ -22,15 +22,24 @@ def checktick(time_func):
 
    return minDelta
 
-# run the different time modules
-case_1 = checktick(time.time)
-case_2 = checktick(timer)
-case_3 = checktick(time.time_ns)
+# run the different time modules multiple times
+def run_clock_granularity_benchmark():
+   case_1_arr = []
+   case_2_arr = []
+   case_3_arr = []
+   for _ in range (100):
+      case_1 = checktick(time.time)
+      case_2 = checktick(timer)
+      case_3 = checktick(time.time_ns)
 
-# print the results of the different timers
-print("1 - time.time(): {} (s)".format(case_1))
-print("2 - timeit: {} (s)".format(case_2))
-print("3 - time.time_ns(): {} (ns)".format(case_3))
+      case_1_arr.append(case_1)
+      case_2_arr.append(case_2)
+      case_3_arr.append(case_3)
+
+   # print the results of the different timers
+   print("1 - average time.time(): {} (s), STD: {}".format(np.average(case_1_arr), np.std(case_1_arr)))
+   print("2 - average timeit: {} (s), STD: {}".format(np.average(case_2_arr), np.std(case_2_arr)))
+   print("3 - average time.time_ns(): {} (ns), STD: {}".format(np.average(case_3_arr), np.std(case_3_arr)))
 
 # Task 1.2 Timing the Julia set code functions
 
@@ -80,4 +89,6 @@ def decorator_func(fn):
 
 # main
 if __name__ == "__main__":
-    pass
+   # un-comment to run the clock granularity benchmark
+   #run_clock_granularity_benchmark()
+   pass
