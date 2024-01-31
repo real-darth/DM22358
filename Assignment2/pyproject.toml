@@ -1,0 +1,24 @@
+[project]
+name = "hpc_assignment2"
+description = ">ssignmet 2 from intro to HPC course at kth "
+version = "0.1.0"
+authors = [
+    { name = "Íñigo Aréjula", email = "ingoaa@kth.se"},
+    { name = "Elliot Darth", email = "edarth@kth.se"},
+    { name = "Oskar Grönman", email = "ogronman@kth.se"},
+]
+dependencies = [
+
+]
+readme = "README.md"
+
+[project.optional-dependencies]
+dev = [
+    "pylint",
+    "black",
+    "sphinx",
+]
+
+
+[tool.black]
+line-length = 100

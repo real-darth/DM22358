@@ -164,3 +164,4 @@ cython_debug/
 *.lprof
 *.dat
 *.stats
+docs
