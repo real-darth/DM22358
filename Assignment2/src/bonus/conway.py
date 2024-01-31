@@ -18,7 +18,7 @@ vals = [ON, OFF]
 
 def randomGrid(N):
     """returns a grid of NxN random values"""
-    return np.random.choice(vals, N * N, p=[0.2, 0.8]).reshape(N, N)
+    return np.random.choice(vals, N * N, p=[1, 0]).reshape(N, N)
 
 
 def addGlider(i, j, grid):

@@ -8,6 +8,8 @@ authors = [
     { name = "Oskar Grönman", email = "ogronman@kth.se"},
 ]
 dependencies = [
+"matplotlib",
+    "numpy",
 
 ]
 readme = "README.md"
