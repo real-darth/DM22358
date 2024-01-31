@@ -1,4 +1,4 @@
-#import JuliaSet  # noqa: F401
+# import JuliaSet  # noqa: F401
 import numpy as np
 import time
 from timeit import default_timer as timer
@@ -7,20 +7,21 @@ from functools import wraps
 # Task 1.1 Calculate the Clock Granularity of different Python Timers (on your system).
 # code for calculating the 'clock granularity', source from Canvas
 def checktick(time_func):
-   M = 200
-   timesfound = np.empty((M,))
-   for i in range(M):
-      t1 = time_func() # get timestamp from timer
-      t2 = time_func() # get timestamp from timer
-      while (t2 - t1) < 1e-16: # if zero then we are below clock granularity, retake timing
-          t2 = time_func() # get timestamp from timer
-      t1 = t2 # this is outside the loop
-      timesfound[i] = t1 # record the time stamp
-   minDelta = 1000000
-   Delta = np.diff(timesfound) # it should be cast to int only when needed
-   minDelta = Delta.min()
+    M = 200
+    timesfound = np.empty((M,))
+    for i in range(M):
+        t1 = time_func()  # get timestamp from timer
+        t2 = time_func()  # get timestamp from timer
+        while (t2 - t1) < 1e-16:  # if zero then we are below clock granularity, retake timing
+            t2 = time_func()  # get timestamp from timer
+        t1 = t2  # this is outside the loop
+        timesfound[i] = t1  # record the time stamp
+    minDelta = 1000000
+    Delta = np.diff(timesfound)  # it should be cast to int only when needed
+    minDelta = Delta.min()
 
-   return minDelta
+    return minDelta
+
 
 # run the different time modules
 case_1 = checktick(time.time)
@@ -34,21 +35,24 @@ print("3 - time.time_ns(): {} (ns)".format(case_3))
 
 # Task 1.2 Timing the Julia set code functions
 
+
 def decorator_func(fn):
-   from timeit import default_timer as ittimer
-   @wraps(fn)
-   def measure_time(*args, **kwargs):
-      resultArray = np.array([])
-      for _ in range(5):
-         t1 = ittimer()
-         result = fn(*args, **kwargs)
-         t2 = ittimer()
-         resultArray = np.append(resultArray,[t2-t1])
-         print(f"@timefn: {fn.__name__} took {t2 - t1} seconds")
-      print(f"Average: {np.average(resultArray)}")
-      print(f"Standard deviation: {np.std(resultArray)}")
-      return result
-   return measure_time
+    from timeit import default_timer as ittimer
+
+    @wraps(fn)
+    def measure_time(*args, **kwargs):
+        resultArray = np.array([])
+        for _ in range(5):
+            t1 = ittimer()
+            result = fn(*args, **kwargs)
+            t2 = ittimer()
+            resultArray = np.append(resultArray, [t2 - t1])
+            print(f"@timefn: {fn.__name__} took {t2 - t1} seconds")
+        print(f"Average: {np.average(resultArray)}")
+        print(f"Standard deviation: {np.std(resultArray)}")
+        return result
+
+    return measure_time
 
 
 # Task 1.3 T Profile the Julia set code with cProfile and line_profiler the computation

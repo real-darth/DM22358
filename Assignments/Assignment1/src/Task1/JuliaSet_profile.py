@@ -1,7 +1,6 @@
 """Julia set generator without optional PIL-based image drawing"""
 import time
 from functools import wraps
-from exercise_1_1 import decorator_func
 
 # from line_profiler import profile
 # from memory_profiler import profile
@@ -24,8 +23,8 @@ def timefn(fn):
     return measure_time
 
 
-# @profile
-@decorator_func
+@profile
+# @decorator_func
 def calc_pure_python(desired_width, max_iterations):
     """Create a list of complex coordinates (zs) and complex parameters (cs),
     build Julia set"""
@@ -67,14 +66,14 @@ def calc_pure_python(desired_width, max_iterations):
     # This sum is expected for a 10000 grid with 300 iterations
     # It ensures that our code evolves exactly as we'd intended
 
-    #assert sum(output) == 3323787511
+    # assert sum(output) == 3323787511
 
     # desired_width 100
     # assert sum(output) == 334236
 
 
-# @profile
-@decorator_func
+@profile
+# @decorator_func
 def calculate_z_serial_purepython(maxiter, zs, cs):
     """Calculate output list using Julia update rule"""
     output = [0] * len(zs)
