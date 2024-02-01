@@ -16,6 +16,15 @@ OFF = 0
 vals = [ON, OFF]
 
 
+def init_grd(N):
+    sequence = [0, 0, 1] * (N // 3) + [0, 0, 1][: N % 3]
+    # create matrix of size N*N with the sequence
+    grid = np.array([sequence] * N)
+    # convert
+
+    return grid
+
+
 def randomGrid(N):
     """returns a grid of NxN random values"""
     return np.random.choice(vals, N * N, p=[0.2, 0.8]).reshape(N, N)
@@ -57,37 +66,28 @@ def addGosperGliderGun(i, j, grid):
 
 
 def update(frameNum, img, grid, N):
-    # copy grid since we require 8 neighbors for calculation
-    # and we go line by line
-    newGrid = grid.copy()
-    for i in range(N):
-        for j in range(N):
-            # compute 8-neghbor sum
-            # using toroidal boundary conditions - x and y wrap around
-            # so that the simulaton takes place on a toroidal surface.
-            total = int(
-                (
-                    grid[i, (j - 1) % N]
-                    + grid[i, (j + 1) % N]
-                    + grid[(i - 1) % N, j]
-                    + grid[(i + 1) % N, j]
-                    + grid[(i - 1) % N, (j - 1) % N]
-                    + grid[(i - 1) % N, (j + 1) % N]
-                    + grid[(i + 1) % N, (j - 1) % N]
-                    + grid[(i + 1) % N, (j + 1) % N]
-                )
-                / 255
-            )
-            # apply Conway's rules
-            if grid[i, j] == ON:
-                if (total < 2) or (total > 3):
-                    newGrid[i, j] = OFF
-            else:
-                if total == 3:
-                    newGrid[i, j] = ON
-    # update data
-    img.set_data(newGrid)
-    grid[:] = newGrid[:]
+    # Counting the number of neighbours.
+    neighbourCount = np.zeros(grid.shape)
+    neighbourCount[1:-1, 1:-1] += (
+        grid[:-2, :-2]
+        + grid[:-2, 1:-1]
+        + grid[:-2, 2:]
+        + grid[1:-1, :-2]
+        + grid[1:-1, 2:]
+        + grid[2:, :-2]
+        + grid[2:, 1:-1]
+        + grid[2:, 2:]
+    ) / 255  # Dividing by 255 to get the number of neighbours, because ON = 255 and OFF = 0.
+
+    # Apply rules.
+    birth = (neighbourCount == 3)[1:-1, 1:-1] & (grid[1:-1, 1:-1] == OFF)
+    survive = ((neighbourCount == 2) | (neighbourCount == 3))[1:-1, 1:-1] & (grid[1:-1, 1:-1] == ON)
+
+    grid[...] = OFF
+    grid[1:-1, 1:-1][birth | survive] = ON
+
+    # Update data.
+    img.set_data(grid)
     return (img,)
 
 
@@ -106,7 +106,7 @@ def main():
     args = parser.parse_args()
 
     # set grid size
-    N = 8
+    N = 100
     if args.N and int(args.N) > 8:
         N = int(args.N)
 
@@ -128,6 +128,8 @@ def main():
         # populate grid with random on/off - more off than on
         grid = randomGrid(N)
 
+    grid = init_grd(N)
+
     # set up animation
     fig, ax = plt.subplots()
     img = ax.imshow(grid, interpolation="nearest")
@@ -139,7 +141,7 @@ def main():
             grid,
             N,
         ),
-        frames=10,
+        frames=20,
         interval=updateInterval,
         save_count=50,
     )
