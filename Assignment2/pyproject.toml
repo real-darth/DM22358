@@ -19,6 +19,8 @@ dev = [
     "pylint",
     "black",
     "sphinx",
+    "perf",
+    "line_profiler",
 ]
 
 
