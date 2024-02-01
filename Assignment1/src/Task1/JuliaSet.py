@@ -23,7 +23,10 @@ def timefn(fn):
     return measure_time
 
 
-@profile
+# Uncomment the decorator you want to use.
+# @profile is for profiling with the CLI profiling tools
+# @decorator_func is for timing the decorated function
+# @profile
 # @decorator_func
 def calc_pure_python(desired_width, max_iterations):
     """Create a list of complex coordinates (zs) and complex parameters (cs),
@@ -71,8 +74,8 @@ def calc_pure_python(desired_width, max_iterations):
     # desired_width 100
     # assert sum(output) == 334236
 
-
-@profile
+# See description of the decorators above calc_pure_python
+# @profile
 # @decorator_func
 def calculate_z_serial_purepython(maxiter, zs, cs):
     """Calculate output list using Julia update rule"""

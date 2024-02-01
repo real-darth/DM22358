@@ -1,10 +1,10 @@
 import sys
-from memory_profiler import profile
-
-# Set-ExecutionPolicy Unrestricted -Scope Process
 
 grid_shape = (640, 640)
 
+# If you want to profile anything then add the @profile decorator above the function you want to profile
+
+# @profile
 def evolve(grid, dt, D=1.0):
     xmax, ymax = grid_shape
     new_grid = [[0.0] * ymax for x in range(xmax)]
@@ -19,11 +19,7 @@ def evolve(grid, dt, D=1.0):
             new_grid[i][j] = grid[i][j] + D * (grid_xx + grid_yy) * dt
     return new_grid
 
-# I interpret "computation" as this function, but not sure if they
-# want us to look at some more specific part of the code when they say computation
-# like looking at the evolve function only.
-
-@profile
+# @profile
 def run_experiment(num_iterations):
     # Setting up initial conditions 
     xmax, ymax = grid_shape
@@ -40,13 +36,7 @@ def run_experiment(num_iterations):
     # Evolve the initial conditions
     for i in range(num_iterations):
         grid = evolve(grid, 0.1)
-        
+
 iter = int(sys.argv[1])
 # run experiment
 run_experiment(iter)
-
-# to run the code in mprof (gather data)
-# mprof run a1_2_2.py
-
-# to visualize the data
-# mprof plot
