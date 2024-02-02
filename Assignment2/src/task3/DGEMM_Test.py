@@ -9,10 +9,12 @@ def test_dgemm_numpy_array():
     B = np.array([[4,5,6], [6,5,4], [4,6,5]])
 
     C_expected = np.array([[28,33,29], [28,31,31], [28,33,29]])
-    C_result = DGEMM.dgemm_numpy_array(A, B, size)
+    C_result, time = DGEMM.dgemm_numpy_array(A, B, size)
 
     assert len(C_expected) == len(C_result)
     assert np.all(C_result == C_expected)
+
+
 
 def test_dgemm_python_list():
     size = 4
@@ -20,10 +22,12 @@ def test_dgemm_python_list():
     B = [[1,2,3,4] for _ in range(4)]
 
     C_expected = [[4,8,12,16], [8,16,24,32], [12,24,36,48], [16,32,48,64]]
-    C_result = DGEMM.dgemm_python_list(A, B, size)
+    C_result, time = DGEMM.dgemm_python_list(A, B, size)
 
     assert len(C_expected) == len(C_result)
     assert np.all(C_result == C_expected)
+
+
 
 def test_dgemm_python_array():
     size = 2
@@ -31,10 +35,12 @@ def test_dgemm_python_array():
     B = array.array('d', [-2, 0, 0.5, -2])
 
     C_expected = array.array('d', [-2.5, 2, -3, -4])
-    C_result = DGEMM.dgemm_python_array(A, B, size)
+    C_result, time = DGEMM.dgemm_python_array(A, B, size)
 
     assert len(C_expected) == len(C_result)
     assert np.all(C_result == C_expected)
+
+
 
 def test_dgemm_blas():
     size = 6
@@ -58,7 +64,7 @@ def test_dgemm_blas():
                            [48,15,39,24,21,26], 
                            [0,15,15,0,5,10], 
                            [3,0,3,2,2,0]])
-    C_result = DGEMM.dgemm_blas(A, B, size)
+    C_result, time = DGEMM.dgemm_blas(A, B, size)
 
     assert len(C_expected) == len(C_result)
     assert np.all(C_result == C_expected)
