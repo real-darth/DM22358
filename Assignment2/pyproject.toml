@@ -10,7 +10,7 @@ authors = [
 dependencies = [
 "matplotlib",
     "numpy",
-
+    "pytest",
 ]
 readme = "README.md"
 
