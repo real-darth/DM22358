@@ -98,7 +98,6 @@ def dgemm_python_array(A=None, B=None, N=N) -> array:
 
     return C
 
-
 def main():
     return 0
 
