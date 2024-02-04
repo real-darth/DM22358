@@ -139,7 +139,7 @@ def measure_main_functions():
     # testing four functions, 10 times, for all sizes
     time_measurments = np.zeros((FUNCTIONS_COUNT, len(sizes), 10))
     # calculate the flops at each dimension (N) to get some measurements
-    FLOPS_S = np.zeros((FUNCTIONS_COUNT, len(sizes), 10))  
+    FLOPS_S = np.zeros((FUNCTIONS_COUNT, len(sizes), 10))
     # iterate over increasing sizes to see how performance is affected
     runtime = time.time()
     for size in sizes:
