@@ -10,7 +10,7 @@ authors = [
 dependencies = [
 "matplotlib",
     "numpy",
-
+    "pandas",
 ]
 readme = "README.md"
 
@@ -21,6 +21,7 @@ dev = [
     "sphinx",
     "perf",
     "line_profiler",
+    "pytest",
 ]
 
 
