@@ -2,96 +2,144 @@ from timeit import default_timer as timer
 import sys
 from array import array
 import matplotlib.pyplot as plt
+import numpy as np
 
-STREAM_ARRAY_SIZE = 10_000
+STREAM_ARRAY_SIZE = 10_000_000
 
 scalar = 2.0
 
-def get_copy_size(size):
-    return 2 * sys.getsizeof(float) * size
-def get_add_size(size):
-    return 2 * sys.getsizeof(float) * size
-def get_scale_size(size):
-    return 3 * sys.getsizeof(float) * size
-def get_triad_size(size):
-    return 3 * sys.getsizeof(float) * size
+def get_copy_size():
+    return (2 * np.nbytes[float] * STREAM_ARRAY_SIZE)
 
-def time_copy(a, c, size):
-    time = timer()
-    for j in range(size):
-        c[j] = a[j]
-    return timer() - time
+def get_add_size():
+    return (2 * np.nbytes[float] * STREAM_ARRAY_SIZE)
 
-def time_scale(b, c, size):
-    time = timer()
-    for j in range(size):
-        b[j] = scalar*c[j]
-    return timer() - time
+def get_scale_size():
+    return (3 * np.nbytes[float] * STREAM_ARRAY_SIZE)
 
-def time_sum(a, b, c, size):
-    time = timer()
-    for j in range(size):
-        c[j] = a[j]+b[j]
-    return timer() - time
-
-def time_triad(a, b, c, size):
-    time = timer()
-    for j in range(size):
-        a[j] = b[j]+scalar*c[j]
-    return timer() - time
+def get_triad_size():
+    return (3 * np.nbytes[float] * STREAM_ARRAY_SIZE)
 
 
-def run_stream_test(type, size,debug):
+
+def run_stream_test(type,debug):
+
+    # List 
     if type=="l":
-        a = [1.0]*size
-        b = [2.0]*size
-        c = [0.0]*size
+        a = [1.0]*STREAM_ARRAY_SIZE
+        b = [2.0]*STREAM_ARRAY_SIZE
+        c = [0.0]*STREAM_ARRAY_SIZE
+    # Array
     else:
-        a = array('f', [1.0] * size)
-        b = array('f', [2.0] * size)
-        c = array('f', [0.0] * size)
+        a = array('f', [1.0] * STREAM_ARRAY_SIZE)
+        b = array('f', [2.0] * STREAM_ARRAY_SIZE)
+        c = array('f', [0.0] * STREAM_ARRAY_SIZE)
+
+    # This should not actually do anything
+    for j in range(STREAM_ARRAY_SIZE):
+        a[j] = 1.0
+        b[j] = 2.0
+        c[j] = 0.0
 
     times = [0.0]*4
 
+    ## Calculate time to do operations:
+
     #copy
-    times[0] = time_copy(a, c, size)
+    times[0] = timer()
+    for j in range(STREAM_ARRAY_SIZE):
+        c[j] = a[j]
+    times[0] = timer() - times[0]
 
     # scale
-    times[1] = time_scale(b, c, size)
+    times[1] = timer()
+    for j in range(STREAM_ARRAY_SIZE):
+        b[j] = scalar*c[j]
+    times[1] = timer() - times[1]
      
      #sum
-    times[2] = time_sum(a, b, c, size)
+    times[2] = timer()
+    for j in range(STREAM_ARRAY_SIZE):
+        c[j] = a[j]+b[j]
+    times[2] = timer() - times[2]
 
     # triad
-    times[3] = time_triad(a, b, c, size)
+    times[3] = timer()
+    for j in range(STREAM_ARRAY_SIZE):
+        a[j] = b[j]+scalar*c[j]
+    times[3] = timer() - times[3]
 
-    #print("Copy size:", copy)
-    #print("Add size:",add)
-    #print("Scale size:",scale)
-    #print("Triad size:",triad)
+    # Get the amount of data moved
+    copy = get_copy_size()
+    add = get_add_size()
+    scale = get_scale_size()
+    triad = get_triad_size()
 
-    copyStream = (get_copy_size(size)/times[0])/1e9
-    addStream = (get_add_size(size)/times[1])/1e9
-    scaleStream = (get_scale_size(size)/times[2])/1e9
-    triadStream = (get_triad_size(size)/times[3])/1e9
+
+    # Calculate bandwidth
+    copyStream = 1.0e-09 * (copy/times[0])
+    addStream = 1.0e-09 * (add/times[1])
+    scaleStream = 1.0e-09 * (scale/times[2])
+    triadStream = 1.0e-09 * (triad/times[3])
 
     total = copyStream + addStream + scaleStream + triadStream
+
     if debug:
         print("Copy GB/s:",copyStream)
         print("Add GB/s:",addStream)
         print("Scale GB/s:",scaleStream)
         print("Triad GB/s:",triadStream)
-
-    return total
+        
+    # Return
+    return [copyStream,addStream,scaleStream,triadStream]
 
 
 if __name__ == "__main__":
-    x = [i * 10 + 100 for i in range(100000) if i * 10 + 100 <= 100_000]
-    y1 = []
-    y2 = []
+
+    x = [i * 10_000 + 10_000 for i in range(10_000) if i * 10_000 + 10_000 <= 10_000_000]
+    y1 = [[],[],[],[]]
+    y2 = [[],[],[],[]]
+
+
     for val in x:
-        y1.append(run_stream_test("l",val, False))
-        y2.append(run_stream_test("array",val, False))
-    plt.plot(x,y1)
-    plt.plot(x,y2)
+        STREAM_ARRAY_SIZE = val
+        data1 = run_stream_test("l", False)
+        data2 = run_stream_test("array", False)
+        y1[0].append(data1[0])
+        y1[1].append(data1[1])
+        y1[2].append(data1[2])
+        y1[3].append(data1[3])
+        y2[0].append(data2[0])
+        y2[1].append(data2[1])
+        y2[2].append(data2[2])
+        y2[3].append(data2[3])
+
+    # Ugly code for adding to plots
+    # Please ignore 
+
+
+    fig, axs = plt.subplots(2, 2)  # a figure with a 2x2 grid of Axes
+    fig.suptitle('List & Array comparison')
+    axs[0, 0].plot(x,y1[0],label="List")
+    axs[0, 0].set_title('Copy')
+    axs[0, 1].plot(x,y1[1],label="List")
+    axs[0, 1].set_title('Add')
+    axs[1, 0].plot(x,y1[2],label="List")
+    axs[1, 0].set_title('Scale')
+    axs[1, 1].plot(x,y1[3],label="List")
+    axs[1, 1].set_title('Triad')
+    axs[0, 0].plot(x,y2[0],label="Array")
+    axs[0, 1].plot(x,y2[1],label="Array")
+    axs[1, 0].plot(x,y2[2],label="Array")
+    axs[1, 1].plot(x,y2[3],label="Array")
+    axs[0, 0].legend()
+    axs[0, 1].legend()
+    axs[1, 0].legend()
+    axs[1, 1].legend()
+
+    # Set common labels
+
+    fig.text(0.5, 0.04, 'N', ha='center', va='center')
+    fig.text(0.06, 0.5, 'GB/s', ha='center', va='center', rotation='vertical')
+
     plt.show()
