@@ -13,10 +13,6 @@ def get_test_data():
 
 @pytest.mark.parametrize('width, iterations, expected', get_test_data())
 def test_calc_pure_python(width, iterations, expected):
-    print(width)
-    print(iterations)
-    assert sum(calc_pure_python(desired_width=width, max_iterations=iterations)) == expected
-
-@pytest.mark.parametrize('width, iterations, expected', get_test_data())
-def test_calc_pure_python_type(width, iterations, expected):
-    assert type(calc_pure_python(desired_width=width, max_iterations=iterations)) is list
+    lst = calc_pure_python(desired_width=width, max_iterations=iterations)
+    assert sum(lst) == expected
+    assert type(lst) is list

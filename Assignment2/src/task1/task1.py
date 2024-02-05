@@ -21,53 +21,62 @@ def get_triad_size():
     return (3 * np.nbytes[float] * STREAM_ARRAY_SIZE)
 
 
-
 def run_stream_test(type,debug):
 
+
+    times = [0.0]*4
     # List 
     if type=="l":
         a = [1.0]*STREAM_ARRAY_SIZE
         b = [2.0]*STREAM_ARRAY_SIZE
         c = [0.0]*STREAM_ARRAY_SIZE
+        
+        ## Calculate time to do operations:
+
+        # copy
+        times[0] = timer()
+        c[:] = a[:]
+        times[0] = timer() - times[0]
+
+        # scale
+        times[1] = timer()
+        b = [scalar * x for x in c]
+        times[1] = timer() - times[1]
+        
+        # add
+        times[2] = timer()
+        c = [x + y for x, y in zip(a, b)]
+        times[2] = timer() - times[2]
+
+        # triad
+        times[3] = timer()
+        a = [x + scalar * y for x, y in zip(b, c)]
+        times[3] = timer() - times[3]
     # Array
     else:
         a = array('f', [1.0] * STREAM_ARRAY_SIZE)
         b = array('f', [2.0] * STREAM_ARRAY_SIZE)
         c = array('f', [0.0] * STREAM_ARRAY_SIZE)
+        # Copy
+        times[0] = timer()
+        c[:] = a[:]
+        times[0] = timer() - times[0]
 
-    # This should not actually do anything
-    for j in range(STREAM_ARRAY_SIZE):
-        a[j] = 1.0
-        b[j] = 2.0
-        c[j] = 0.0
+        # Scale
+        times[1] = timer()
+        b = array('d', [scalar * x for x in c])
+        times[1] = timer() - times[1]
+        
+        # Add
+        times[2] = timer()
+        c = array('d', [x + y for x, y in zip(a, b)])
+        times[2] = timer() - times[2]
 
-    times = [0.0]*4
+        # Triad
+        times[3] = timer()
+        a = array('d', [x + scalar * y for x, y in zip(b, c)])
+        times[3] = timer() - times[3]
 
-    ## Calculate time to do operations:
-
-    #copy
-    times[0] = timer()
-    for j in range(STREAM_ARRAY_SIZE):
-        c[j] = a[j]
-    times[0] = timer() - times[0]
-
-    # scale
-    times[1] = timer()
-    for j in range(STREAM_ARRAY_SIZE):
-        b[j] = scalar*c[j]
-    times[1] = timer() - times[1]
-     
-     #sum
-    times[2] = timer()
-    for j in range(STREAM_ARRAY_SIZE):
-        c[j] = a[j]+b[j]
-    times[2] = timer() - times[2]
-
-    # triad
-    times[3] = timer()
-    for j in range(STREAM_ARRAY_SIZE):
-        a[j] = b[j]+scalar*c[j]
-    times[3] = timer() - times[3]
 
     # Get the amount of data moved
     copy = get_copy_size()
@@ -96,7 +105,9 @@ def run_stream_test(type,debug):
 
 if __name__ == "__main__":
 
-    x = [i * 10_000 + 10_000 for i in range(10_000) if i * 10_000 + 10_000 <= 10_000_000]
+
+
+    x = [i * 10_000 + 10_000 for i in range(100_000) if i * 10_000 + 10_000 <= 100_000]
     y1 = [[],[],[],[]]
     y2 = [[],[],[],[]]
 
