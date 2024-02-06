@@ -7,6 +7,7 @@ Author: Mahesh Venkitachalam
 """
 
 import sys, argparse
+import threading
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -62,37 +63,28 @@ def addGosperGliderGun(i, j, grid):
 
 
 def update(frameNum, img, grid, N):
-    # copy grid since we require 8 neighbors for calculation
-    # and we go line by line
-    newGrid = grid.copy()
-    for i in range(N):
-        for j in range(N):
-            # compute 8-neghbor sum
-            # using toroidal boundary conditions - x and y wrap around
-            # so that the simulaton takes place on a toroidal surface.
-            total = int(
-                (
-                    grid[i, (j - 1) % N]
-                    + grid[i, (j + 1) % N]
-                    + grid[(i - 1) % N, j]
-                    + grid[(i + 1) % N, j]
-                    + grid[(i - 1) % N, (j - 1) % N]
-                    + grid[(i - 1) % N, (j + 1) % N]
-                    + grid[(i + 1) % N, (j - 1) % N]
-                    + grid[(i + 1) % N, (j + 1) % N]
-                )
-                / 255
-            )
-            # apply Conway's rules
-            if grid[i, j] == ON:
-                if (total < 2) or (total > 3):
-                    newGrid[i, j] = OFF
-            else:
-                if total == 3:
-                    newGrid[i, j] = ON
-    # update data
-    img.set_data(newGrid)
-    grid[:] = newGrid[:]
+    # Counting the number of neighbours.
+    neighbourCount = np.zeros(grid.shape)
+    neighbourCount[1:-1, 1:-1] += (
+        grid[:-2, :-2]
+        + grid[:-2, 1:-1]
+        + grid[:-2, 2:]
+        + grid[1:-1, :-2]
+        + grid[1:-1, 2:]
+        + grid[2:, :-2]
+        + grid[2:, 1:-1]
+        + grid[2:, 2:]
+    ) / 255  # Dividing by 255 to get the number of neighbours, because ON = 255 and OFF = 0.
+
+    # Apply rules.
+    birth = (neighbourCount == 3)[1:-1, 1:-1] & (grid[1:-1, 1:-1] == OFF)
+    survive = ((neighbourCount == 2) | (neighbourCount == 3))[1:-1, 1:-1] & (grid[1:-1, 1:-1] == ON)
+
+    grid[...] = OFF
+    grid[1:-1, 1:-1][birth | survive] = ON
+
+    # Update data.
+    img.set_data(grid)
     return (img,)
 
 
@@ -101,7 +93,8 @@ def main():
     # Command line args are in sys.argv[1], sys.argv[2] ..
     # sys.argv[0] is the script name itself and can be ignored
     # parse arguments
-    parser = argparse.ArgumentParser(description="Runs Conway's Game of Life simulation.")
+    parser = argparse.ArgumentParser(
+            description="Runs Conway's Game of Life simulation.")
     # add arguments
     parser.add_argument("--grid-size", dest="N", required=False)
     parser.add_argument("--mov-file", dest="movfile", required=False)
@@ -130,7 +123,7 @@ def main():
     elif args.gosper:
         grid = np.zeros(N * N).reshape(N, N)
         addGosperGliderGun(10, 10, grid)
-    elif args.one_step:
+    elif True:
         grid = init_grd(N)
 
     else:

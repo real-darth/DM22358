@@ -11,6 +11,7 @@ dependencies = [
     "matplotlib",
     "numpy",
     "pytest",
+    "pandas",
 ]
 readme = "README.md"
 
@@ -19,6 +20,9 @@ dev = [
     "pylint",
     "black",
     "sphinx",
+    "perf",
+    "line_profiler",
+    "pytest",
 ]
 
 
