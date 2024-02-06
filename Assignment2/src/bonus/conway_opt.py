@@ -7,6 +7,7 @@ Author: Mahesh Venkitachalam
 """
 
 import sys, argparse
+import threading
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -17,11 +18,7 @@ vals = [ON, OFF]
 
 
 def init_grd(N):
-    sequence = [0, 0, 1] * (N // 3) + [0, 0, 1][: N % 3]
-    # create matrix of size N*N with the sequence
-    grid = np.array([sequence] * N)
-    # convert
-
+    grid = np.zeros(N * N).reshape(N, N)
     return grid
 
 
@@ -96,13 +93,15 @@ def main():
     # Command line args are in sys.argv[1], sys.argv[2] ..
     # sys.argv[0] is the script name itself and can be ignored
     # parse arguments
-    parser = argparse.ArgumentParser(description="Runs Conway's Game of Life simulation.")
+    parser = argparse.ArgumentParser(
+            description="Runs Conway's Game of Life simulation.")
     # add arguments
     parser.add_argument("--grid-size", dest="N", required=False)
     parser.add_argument("--mov-file", dest="movfile", required=False)
     parser.add_argument("--interval", dest="interval", required=False)
     parser.add_argument("--glider", action="store_true", required=False)
     parser.add_argument("--gosper", action="store_true", required=False)
+    parser.add_argument("--one-step", action="store_true", required=False)
     args = parser.parse_args()
 
     # set grid size
@@ -124,11 +123,12 @@ def main():
     elif args.gosper:
         grid = np.zeros(N * N).reshape(N, N)
         addGosperGliderGun(10, 10, grid)
+    elif True:
+        grid = init_grd(N)
+
     else:
         # populate grid with random on/off - more off than on
         grid = randomGrid(N)
-
-    grid = init_grd(N)
 
     # set up animation
     fig, ax = plt.subplots()
@@ -151,7 +151,8 @@ def main():
     if args.movfile:
         ani.save(args.movfile, fps=30, extra_args=["-vcodec", "libx264"])
 
-    plt.show()
+    # show plot  by 5 s
+    plt.show(block=True)
 
 
 # call main

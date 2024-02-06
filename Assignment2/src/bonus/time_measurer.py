@@ -7,11 +7,7 @@ from conway import OFF, ON
 
 
 def init_grd(N):
-    sequence = [0, 0, 1] * (N // 3) + [0, 0, 1][: N % 3]
-    # create matrix of size N*N with the sequence
-    grid = np.array([sequence] * N)
-    # convert
-
+    grid = np.zeros(N * N).reshape(N, N)
     return grid
 
 

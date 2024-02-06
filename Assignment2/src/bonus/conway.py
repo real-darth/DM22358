@@ -16,6 +16,11 @@ OFF = 0
 vals = [ON, OFF]
 
 
+def init_grd(N):
+    grid = np.zeros(N * N).reshape(N, N)
+    return grid
+
+
 def randomGrid(N):
     """returns a grid of NxN random values"""
     return np.random.choice(vals, N * N, p=[0.2, 0.8]).reshape(N, N)
@@ -103,10 +108,11 @@ def main():
     parser.add_argument("--interval", dest="interval", required=False)
     parser.add_argument("--glider", action="store_true", required=False)
     parser.add_argument("--gosper", action="store_true", required=False)
+    parser.add_argument("--one-step", action="store_true", required=False)
     args = parser.parse_args()
 
     # set grid size
-    N = 8
+    N = 100
     if args.N and int(args.N) > 8:
         N = int(args.N)
 
@@ -124,6 +130,9 @@ def main():
     elif args.gosper:
         grid = np.zeros(N * N).reshape(N, N)
         addGosperGliderGun(10, 10, grid)
+    elif args.one_step:
+        grid = init_grd(N)
+
     else:
         # populate grid with random on/off - more off than on
         grid = randomGrid(N)
@@ -139,7 +148,7 @@ def main():
             grid,
             N,
         ),
-        frames=10,
+        frames=20,
         interval=updateInterval,
         save_count=50,
     )
@@ -149,7 +158,8 @@ def main():
     if args.movfile:
         ani.save(args.movfile, fps=30, extra_args=["-vcodec", "libx264"])
 
-    plt.show()
+    # show plot  by 5 s
+    plt.show(block=True)
 
 
 # call main
