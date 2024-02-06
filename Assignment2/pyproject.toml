@@ -8,8 +8,9 @@ authors = [
     { name = "Oskar Grönman", email = "ogronman@kth.se"},
 ]
 dependencies = [
-"matplotlib",
+    "matplotlib",
     "numpy",
+    "pytest",
     "pandas",
 ]
 readme = "README.md"
