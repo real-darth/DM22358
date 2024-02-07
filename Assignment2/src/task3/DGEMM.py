@@ -7,7 +7,14 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 N = 1 # default to one 
+
+# comment / uncomment the TEST_SIZES you want to run
+# max size of 1000 takes around 2 hours and 30 minutes to run
+# max size of 300 takes around 3 minutes and 38 seconds to run
+
 TEST_SIZES = [10, 30, 50, 70, 100, 200, 300, 500, 700, 1000]
+#TEST_SIZES = [10, 30, 50, 70, 100, 200, 300]
+
 FUNCTIONS_COUNT = 4 # we have four functions to test
 
 # set seeds for determenistic
