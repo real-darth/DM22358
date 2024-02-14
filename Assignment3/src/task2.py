@@ -18,8 +18,8 @@ def timefn(fn):
         return result, time_delta  # return result and time delta
     return measure_time
 
-
-def gauss_seidel_numpy(f):
+@profile
+def gauss_seidel_numpy(f, N):
     newf = f.copy()
 
     for i in range(1,newf.shape[0]-1):
@@ -29,6 +29,7 @@ def gauss_seidel_numpy(f):
     
     return newf
 
+@profile
 def gauss_seidel_array(f, N):
     newf = copy.deepcopy(f)
 
@@ -39,8 +40,8 @@ def gauss_seidel_array(f, N):
     
     return newf
 
-
-def gauss_seidel_list(f):
+@profile
+def gauss_seidel_list(f, N):
     newf = f.copy()
     for i in range(1,len(newf)-1):
         for j in range(1,len(newf[0])-1):
@@ -50,36 +51,27 @@ def gauss_seidel_list(f):
     return newf
 
 @timefn
-def runGauss_numpy(f):
+def runGauss(f, fn, N):
     for _ in range(100):    
-        f = gauss_seidel_numpy(f)
-
-@timefn
-def runGauss_list(f):
-    for _ in range(100):    
-        f = gauss_seidel_list(f)
-
-@timefn
-def runGauss_array(f, N):
-    for _ in range(100):    
-        f = gauss_seidel_array(f, N)
+        f = fn(f, N)
+    return f
 
 
 
 def main():
     times = [[],[],[]]
-    y = [10*i for i in range(10)]
+    y = [1000*i for i in range(1,2)]
     for N in y:
-        pyList = [[random.random()] * N for _ in range(N)]
-        pyArray = array.array('d', [random.random()] * N * N)
-        numpyArray = np.random.rand(N, N)
-        _, listTime = runGauss_list(pyList)
-        _, arrayTime = runGauss_array(pyArray, N)
-        _, numpyTime = runGauss_numpy(numpyArray)
+        num = random.random()
+        pyList = [[num] * N for _ in range(N)]
+        pyArray = array.array('f', [num] * N * N)
+        numpyArray = num * np.ones((N, N))
+        f1, listTime = runGauss(pyList, gauss_seidel_list, N)
+        f2, arrayTime = runGauss(pyArray, gauss_seidel_array,N)
+        f3, numpyTime = runGauss(numpyArray, gauss_seidel_numpy, N)
         times[0].append(listTime)
         times[1].append(arrayTime)
         times[2].append(numpyTime)
-
     return times, y
 
 
