@@ -1,7 +1,9 @@
 import copy
 
-
 #cython: boundscheck=False
+#cython.wraparound(False)
+#cython.cdivision(True)
+#cython.nonecheck(False)
 def gauss_seidel_numpy(f, N):
 
     cdef unsigned int len1, len2, i, j
@@ -26,6 +28,9 @@ def gauss_seidel_numpy(f, N):
     return newf
 
 #cython: boundscheck=False
+#cython.wraparound(False)
+#cython.cdivision(True)
+#cython.nonecheck(False)
 def gauss_seidel_array(f, N):
 
     cdef unsigned int len, nn, i ,j
@@ -49,10 +54,13 @@ def gauss_seidel_array(f, N):
     return newf
 
 #cython: boundscheck=False
+#cython.wraparound(False)
+#cython.cdivision(True)
+#cython.nonecheck(False)
 def gauss_seidel_list(f, N):
 
     cdef unsigned int len1, len2, i, j
-    cdef float val
+    cdef float val, temp
 
     newf = f.copy()
 
@@ -63,7 +71,8 @@ def gauss_seidel_list(f, N):
 
     for _ in range(1,len1):
         for _ in range(1,len2):
-            val = 0.25 * (newf[i][j+1] + newf[i][j-1] + newf[i+1][j] + newf[i-1][j])
+            temp = (newf[i][j+1] + newf[i][j-1] + newf[i+1][j] + newf[i-1][j])
+            val = 0.25*temp
             newf[i][j] = val
             j += 1
         j = 1

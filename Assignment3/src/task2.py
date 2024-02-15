@@ -7,7 +7,6 @@ from functools import wraps
 from timeit import default_timer as timer
 import matplotlib.pyplot as plt
 import task2C
-import torch
 
 
 def timefn(fn):
@@ -51,27 +50,7 @@ def gauss_seidel_list(f, N):
     
     return newf
 
-def gauss_seidel_torch(f: torch.Tensor):
-    """
-    Applies the Gauss-Seidel method to solve a system of linear equations represented by the input tensor.
 
-    Parameters:
-    f (torch.Tensor): The input tensor representing the system of linear equations.
-
-    Returns:
-    torch.Tensor: The updated tensor after applying the Gauss-Seidel method.
-    """
-    newf = f.clone()
-
-    for _ in range(1, newf.shape[0] - 1):
-        newf[1:-1, 1:-1] = 0.25 * (
-            torch.roll(newf, 1, dims=0)[1:-1, 1:-1]
-            + torch.roll(newf, -1, dims=0)[1:-1, 1:-1]
-            + torch.roll(newf, 1, dims=1)[1:-1, 1:-1]
-            + torch.roll(newf, -1, dims=1)[1:-1, 1:-1]
-        )
-
-    return newf
 
 @timefn
 def runGauss(f, fn, N):
@@ -110,11 +89,11 @@ def main():
 
 if __name__ == "__main__":
     times, y = main()
-    plt.plot(y,times[0],label="List C")
-    plt.plot(y,times[1],label="Array C")
-    plt.plot(y,times[2],label="Numpy C")
-    plt.plot(y,times[3],label="List")
-    plt.plot(y,times[4],label="Array")
-    plt.plot(y,times[5],label="Numpy")
+    plt.loglog(y,times[0],label="List C")
+    plt.loglog(y,times[1],label="Array C")
+    plt.loglog(y,times[2],label="Numpy C")
+    plt.loglog(y,times[3],label="List")
+    plt.loglog(y,times[4],label="Array")
+    plt.loglog(y,times[5],label="Numpy")
     plt.legend()
     plt.show()
