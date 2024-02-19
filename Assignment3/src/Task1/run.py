@@ -4,11 +4,11 @@ import numpy as np
 from old import run_stream_test
 
 size = 1_000_000
+plot_old = False
 
 if __name__ == "__main__":
     print("Run started!")
     x = [i * 10_000 + 10_000 for i in range(size) if i * 10_000 + 10_000 <= size]
-    #x = np.arange(1, 1_000_000, 100_000)
     # Cython benchmarks
     y1 = [[],[],[],[]]
     y2 = [[],[],[],[]]
@@ -59,19 +59,20 @@ if __name__ == "__main__":
     axs[0, 1].plot(x,y2[1],label="Array Cython")
     axs[1, 0].plot(x,y2[2],label="Array Cython")
     axs[1, 1].plot(x,y2[3],label="Array Cython")
-    # new plots
-    axs[0, 0].plot(x,y3[0],label="List Python")
-    axs[0, 0].set_title('Copy')
-    axs[0, 1].plot(x,y3[1],label="List Python")
-    axs[0, 1].set_title('Add')
-    axs[1, 0].plot(x,y3[2],label="List Python")
-    axs[1, 0].set_title('Scale')
-    axs[1, 1].plot(x,y3[3],label="List Python")
-    axs[1, 1].set_title('Triad')
-    axs[0, 0].plot(x,y4[0],label="Array Python")
-    axs[0, 1].plot(x,y4[1],label="Array Python")
-    axs[1, 0].plot(x,y4[2],label="Array Python")
-    axs[1, 1].plot(x,y4[3],label="Array Python")
+    # Python
+    if plot_old:
+        axs[0, 0].plot(x,y3[0],label="List Python")
+        axs[0, 0].set_title('Copy')
+        axs[0, 1].plot(x,y3[1],label="List Python")
+        axs[0, 1].set_title('Add')
+        axs[1, 0].plot(x,y3[2],label="List Python")
+        axs[1, 0].set_title('Scale')
+        axs[1, 1].plot(x,y3[3],label="List Python")
+        axs[1, 1].set_title('Triad')
+        axs[0, 0].plot(x,y4[0],label="Array Python")
+        axs[0, 1].plot(x,y4[1],label="Array Python")
+        axs[1, 0].plot(x,y4[2],label="Array Python")
+        axs[1, 1].plot(x,y4[3],label="Array Python")
     axs[0, 0].legend()
     axs[0, 1].legend()
     axs[1, 0].legend()
