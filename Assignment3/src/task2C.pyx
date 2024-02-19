@@ -1,9 +1,9 @@
 import copy
 
 #cython: boundscheck=False
-#cython.wraparound(False)
-#cython.cdivision(True)
-#cython.nonecheck(False)
+#cython: wraparound=False
+#cython: cdivision=True
+#cython: nonecheck=False
 def gauss_seidel_numpy(f, N):
 
     cdef unsigned int len1, len2, i, j
@@ -28,9 +28,9 @@ def gauss_seidel_numpy(f, N):
     return newf
 
 #cython: boundscheck=False
-#cython.wraparound(False)
-#cython.cdivision(True)
-#cython.nonecheck(False)
+#cython: wraparound=False
+#cython: cdivision=True
+#cython: nonecheck=False
 def gauss_seidel_array(f, N):
 
     cdef unsigned int len, nn, i ,j
@@ -54,9 +54,9 @@ def gauss_seidel_array(f, N):
     return newf
 
 #cython: boundscheck=False
-#cython.wraparound(False)
-#cython.cdivision(True)
-#cython.nonecheck(False)
+#cython: wraparound=False
+#cython: cdivision=True
+#cython: nonecheck=False
 def gauss_seidel_list(f, N):
 
     cdef unsigned int len1, len2, i, j
