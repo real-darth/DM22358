@@ -5,23 +5,23 @@ from array import array
 import numpy as np
 cimport numpy as np
 
-cdef int STREAM_ARRAY_SIZE = 1_000_000
+# cdef int STREAM_ARRAY_SIZE = 1_000_000
 
 cdef float scalar = 2.0
 
-cdef int get_copy_size():
+cdef int get_copy_size(int STREAM_ARRAY_SIZE):
     return (2 * np.nbytes[np.float64] * STREAM_ARRAY_SIZE)
 
-cdef int get_add_size():
+cdef int get_add_size(int STREAM_ARRAY_SIZE):
     return (2 * np.nbytes[np.float64] * STREAM_ARRAY_SIZE)
 
-cdef int get_scale_size():
+cdef int get_scale_size(int STREAM_ARRAY_SIZE):
     return (3 * np.nbytes[np.float64] * STREAM_ARRAY_SIZE)
 
-cdef int get_triad_size():
+cdef int get_triad_size(int STREAM_ARRAY_SIZE):
     return (3 * np.nbytes[np.float64] * STREAM_ARRAY_SIZE)
 
-def run_stream_test(type, debug):
+def run_stream_test(type, debug, STREAM_ARRAY_SIZE):
     cdef list times = [0.0] * 4
     cdef int copy, add, scale, triad
     cdef float copyStream, addStream, scaleStream, triadStream
@@ -71,10 +71,10 @@ def run_stream_test(type, debug):
         a_array = array('d', [x + scalar * y for x, y in zip(b_array, c_array)])
         times[3] = timer() - times[3]
 
-    copy = get_copy_size()
-    add = get_add_size()
-    scale = get_scale_size()
-    triad = get_triad_size()
+    copy = get_copy_size(STREAM_ARRAY_SIZE)
+    add = get_add_size(STREAM_ARRAY_SIZE)
+    scale = get_scale_size(STREAM_ARRAY_SIZE)
+    triad = get_triad_size(STREAM_ARRAY_SIZE)
 
     copyStream = 1.0e-09 * (copy/times[0])
     addStream = 1.0e-09 * (add/times[1])
