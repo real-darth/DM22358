@@ -1,9 +1,16 @@
 # Project
 
 ## Installation
+### Linux/MacOX
 ```bash
 python3.9 -m venv venv  
 source venv/bin/activate
+```
+
+### Windows
+```bash
+python -m venv venv  
+source venv/scripts/activate
 ```
 
 For installing dependecies do 
