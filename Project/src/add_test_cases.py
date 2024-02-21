@@ -40,7 +40,7 @@ def add_test(test_name, N=500, nt=200, seed=17, params={}) -> None:
         test_name (String): Name of the new test
         N (int): Number of birds simulated
         Nt (int): Simulation length, number of time steps
-        Seed (int): Seed for the random numbers
+        Seed(int): Seed for the randomness in the simulation
         Params (dict): Optional dictionary containing specifications of parameters, like starting velocity, fluctuation etc
     '''
 
@@ -67,10 +67,10 @@ def add_test(test_name, N=500, nt=200, seed=17, params={}) -> None:
 
 if __name__== "__main__":
     for i in range(40,60):
-        name = "simpleTest" + str(i*10)
+        name = "simple_test" + str(i*10)
         add_test(name,i*10)
         for j in range(0,3):
-            name = "v0=" + str(j) + "Test"
+            name = "v0=" + str(j) + "_test"
             add_test(name,i*10,params={'v0':j})
         
     print("All tests added.")

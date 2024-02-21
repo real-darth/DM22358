@@ -21,6 +21,10 @@ def get_test_data():
 # Could make improvement to not call get_test_data() twice
 @pytest.mark.parametrize('N, nt, seed, params, x, y', get_test_data().values(), ids=get_test_data().keys())
 def test_simulate(N, nt, seed, params, x, y):
-    res_x, res_y = simulate_flocking(N, nt,seed,params)
+    res_x, res_y = simulate_flocking(N, nt, seed,params)
+    print(res_x[0])
+    print(x[0])
+    print(res_y[0])
+    print(y[0])
     assert np.array_equal(res_x,x)
     assert np.array_equal(res_y,y)
