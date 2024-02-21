@@ -22,6 +22,7 @@ dev = [
     "pre-commit",
     "black",
     "flake8",
+    "pytest",
 ]
 
 [tool.black]
