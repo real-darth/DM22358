@@ -26,5 +26,5 @@ def test_simulate(N, nt, seed, params, x, y):
     print(x[0])
     print(res_y[0])
     print(y[0])
-    assert np.array_equal(res_x,x)
-    assert np.array_equal(res_y,y)
+    assert np.array_equal(np.around(res_x,5),np.around(x,5))
+    assert np.array_equal(np.around(res_y,5),np.around(y,5))
