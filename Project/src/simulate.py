@@ -2,8 +2,6 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 
-from memory_profiler import profile
-
 """
 Simulate Viscek model for flocking birds.
 
@@ -12,24 +10,26 @@ Philip Mocz (2021) Princeton Univeristy, @PMocz
 """
 
 #@profile
-def simulate_flocking(N, Nt) -> None:
+def simulate_flocking(N, Nt, seed=17, params = {}):
     """Finite Volume simulation.
     
     Args:
         N (int): Number of birds simulated
         Nt (int): Simulation length, number of time steps
+        Seed (int): Seed for the random numbers
+        Params (dict): Optional dictionary containing specifications of parameters, like starting velocity, fluctuation etc
     """
     
     # Simulation parameters
-    v0           = 1.0      # velocity
-    eta          = 0.5      # random fluctuation in angle (in radians)
-    L            = 10       # size of box
-    R            = 1        # interaction radius
-    dt           = 0.2      # time step
-    plotRealTime = False     # Flag for updating the graph in real-time
+    v0           = params.get('v0', 1.0)     # velocity
+    eta          = params.get('eta', 0.5)    # random fluctuation in angle (in radians)
+    L            = params.get('L', 10)       # size of box
+    R            = params.get('R', 1)        # interaction radius
+    dt           = params.get('dt', 0.2)     # time step
+    plotRealTime = params.get('plotRealTime', False)     # Flag for updating the graph in real-time
     
     # Initialize
-    np.random.seed(17)      # set the random number generator seed
+    np.random.seed(seed)      # set the random number generator seed
 
     # bird positions
     x = np.random.rand(N,1)*L
@@ -70,7 +70,6 @@ def simulate_flocking(N, Nt) -> None:
         # update velocities
         vx = v0 * np.cos(theta)
         vy = v0 * np.sin(theta)
-        
         # plot in real time
         if plotRealTime: # or (i == Nt-1):
             plt.cla()
@@ -85,6 +84,7 @@ def simulate_flocking(N, Nt) -> None:
     if plotRealTime:
         plt.savefig('simulation_plots/activematter.png',dpi=240)
         plt.show()
+    return x, y
 
 def main():
     N = 500
