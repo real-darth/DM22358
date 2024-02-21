@@ -23,7 +23,7 @@ def timefn(fn):
     return measure_time
 
 
-@profile
+#@profile
 def gauss_seidel_numpy(f, N):
     newf = f.copy()
 
@@ -34,7 +34,7 @@ def gauss_seidel_numpy(f, N):
     
     return newf
 
-@profile
+#@profile
 def gauss_seidel_array(f, N):
     newf = copy.deepcopy(f)
 
@@ -45,7 +45,7 @@ def gauss_seidel_array(f, N):
     
     return newf
 
-@profile
+#@profile
 def gauss_seidel_list(f, N):
     newf = f.copy()
     for i in range(1,len(newf)-1):
