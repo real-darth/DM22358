@@ -1,12 +1,18 @@
 import pytest
 import json
 import numpy as np
+import os
 from simulate import simulate_flocking
 
 
 
 def get_test_data():
-    f = open('test_suite/test_data.json')
+
+    # Get the path to the test data
+    current_dir = os.path.dirname(__file__)
+    json_file_path = os.path.join(current_dir, 'test_suite', 'test_data.json')
+
+    f = open(json_file_path)
     testList = {}
     jsonDict = json.load(f)
     for test in jsonDict:

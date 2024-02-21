@@ -1,10 +1,16 @@
 from JuliaSet import calc_pure_python
 import pytest
 import json
+import os
  
 def get_test_data():
         testList = []
-        f = open('testData.json')
+        
+        # Get the path to test data
+        current_dir = os.path.dirname(__file__)
+        json_file_path = os.path.join(current_dir,  'testData.json')
+        
+        f = open(json_file_path)
         jsonDict = json.load(f)
         for i in jsonDict['tests']:
             testList.append((i['width'], i['iterations'], i['expected']))
