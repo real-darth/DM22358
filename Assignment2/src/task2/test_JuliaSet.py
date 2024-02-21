@@ -4,10 +4,7 @@ import json
  
 def get_test_data():
         testList = []
-        try:
-            f = open('testData.json')
-        except FileNotFoundError:
-            f = open('tests/testData.json')
+        f = open('testData.json')
         jsonDict = json.load(f)
         for i in jsonDict['tests']:
             testList.append((i['width'], i['iterations'], i['expected']))

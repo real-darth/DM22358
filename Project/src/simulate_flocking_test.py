@@ -6,10 +6,7 @@ from simulate import simulate_flocking
 
 
 def get_test_data():
-    try:
-        f = open('test_suite/test_data.json')
-    except FileNotFoundError:
-        f = open('tests/test_data.json')
+    f = open('test_suite/test_data.json')
     testList = {}
     jsonDict = json.load(f)
     for test in jsonDict:
