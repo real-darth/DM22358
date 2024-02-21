@@ -1,0 +1,55 @@
+Timer unit: 1e-06 s
+
+Total time: 246.866 s
+File: task2.py
+Function: gauss_seidel_list at line 43
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    43                                           @profile
+    44                                           def gauss_seidel_list(f, N):
+    45       100        484.7      4.8      0.0      newf = f.copy()
+    46     99900      37586.9      0.4      0.0      for i in range(1,len(newf)-1):
+    47  99700200   29826361.8      0.3     12.1          for j in range(1,len(newf[0])-1):
+    48 298801200  136706143.9      0.5     55.4              newf[i][j] = 0.25 * (newf[i][j+1] + newf[i][j-1] +
+    49 199200800   80295109.2      0.4     32.5                  newf[i+1][j] + newf[i-1][j])
+    50
+    51       100         67.2      0.7      0.0      return newf
+
+Total time: 302.125 s
+File: task2.py
+Function: gauss_seidel_array at line 32
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    32                                           @profile
+    33                                           def gauss_seidel_array(f, N):
+    34       100      85040.9    850.4      0.0      newf = copy.deepcopy(f)
+    35
+    36     99900      33589.6      0.3      0.0      for i in range(1,N-1):
+    37  99700200   31303722.5      0.3     10.4          for j in range(1,N-1):
+    38 298801200  174005411.1      0.6     57.6              newf[i*N + j] = 0.25 * (newf[i*N + j+1] + newf[i*N + j-1] +
+    39 199200800   96697145.6      0.5     32.0                  newf[(i+1)*N+j] + newf[(i-1)*N + j])
+    40
+    41       100         76.2      0.8      0.0      return newf
+
+Total time: 338.787 s
+File: task2.py
+Function: gauss_seidel_numpy at line 21
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    21                                           @profile
+    22                                           def gauss_seidel_numpy(f, N):
+    23       100     157089.8   1570.9      0.0      newf = f.copy()
+    24
+    25     99900      31513.4      0.3      0.0      for i in range(1,newf.shape[0]-1):
+    26  99700200   32006024.4      0.3      9.4          for j in range(1,newf.shape[1]-1):
+    27 298801200  202636336.4      0.7     59.8              newf[i,j] = 0.25 * (newf[i,j+1] + newf[i,j-1] +
+    28 199200800  103956318.8      0.5     30.7                  newf[i+1,j] + newf[i-1,j])
+    29
+    30       100         73.1      0.7      0.0      return newf
+
+246.87 seconds - task2.py:43 - gauss_seidel_list
+302.12 seconds - task2.py:32 - gauss_seidel_array
+338.79 seconds - task2.py:21 - gauss_seidel_numpy

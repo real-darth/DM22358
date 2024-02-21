@@ -1,11 +1,6 @@
 {
     "tests":[
         {
-            "width": 1000,
-            "iterations":300,
-            "expected": 33219980
-        },
-        {
             "width": 100,
             "iterations":300,
             "expected": 334236

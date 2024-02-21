@@ -6,6 +6,10 @@ import copy
 from functools import wraps
 from timeit import default_timer as timer
 import matplotlib.pyplot as plt
+import task2C
+#import task2CFew
+import task2Mid
+
 
 def timefn(fn):
     from timeit import default_timer as timer
@@ -19,7 +23,8 @@ def timefn(fn):
     return measure_time
 
 
-def gauss_seidel_numpy(f):
+#@profile
+def gauss_seidel_numpy(f, N):
     newf = f.copy()
 
     for i in range(1,newf.shape[0]-1):
@@ -29,6 +34,7 @@ def gauss_seidel_numpy(f):
     
     return newf
 
+#@profile
 def gauss_seidel_array(f, N):
     newf = copy.deepcopy(f)
 
@@ -39,8 +45,8 @@ def gauss_seidel_array(f, N):
     
     return newf
 
-
-def gauss_seidel_list(f):
+#@profile
+def gauss_seidel_list(f, N):
     newf = f.copy()
     for i in range(1,len(newf)-1):
         for j in range(1,len(newf[0])-1):
@@ -49,45 +55,50 @@ def gauss_seidel_list(f):
     
     return newf
 
-@timefn
-def runGauss_numpy(f):
-    for _ in range(100):    
-        f = gauss_seidel_numpy(f)
+
 
 @timefn
-def runGauss_list(f):
-    for _ in range(100):    
-        f = gauss_seidel_list(f)
-
-@timefn
-def runGauss_array(f, N):
-    for _ in range(100):    
-        f = gauss_seidel_array(f, N)
+def runGauss(f, fn, N):
+    for _ in range(1000):    
+        f = fn(f, N)
+    return f
 
 
 
 def main():
-    times = [[],[],[]]
-    y = [10*i for i in range(10)]
+    times = [[],[],[],[],[],[],[]]
+    y = [10,50,100,500, 1000, 5000, 10_000]
     for N in y:
+        print(N)
         pyList = [[random.random()] * N for _ in range(N)]
-        pyArray = array.array('d', [random.random()] * N * N)
-        numpyArray = np.random.rand(N, N)
-        _, listTime = runGauss_list(pyList)
-        _, arrayTime = runGauss_array(pyArray, N)
-        _, numpyTime = runGauss_numpy(numpyArray)
+        pyList2 = pyList.copy()
+        pyArray = array.array('f', [random.random()] * N * N)
+        pyArray2 = copy.deepcopy(pyArray)
+        numpyArray = np.random.rand(N,N)
+        numpyArray2 = numpyArray.copy()
+        _, listTime = runGauss(pyList, gauss_seidel_list, N)
+        _, arrayTime = runGauss(pyArray, gauss_seidel_array,N)
+        _, numpyTime = runGauss(numpyArray, gauss_seidel_numpy, N)
+        _, listTime2 = runGauss(pyList2, task2Mid.gauss_seidel_list, N)
+        _, arrayTime2 = runGauss(pyArray2, task2Mid.gauss_seidel_array,N)
+        _, numpyTime2 = runGauss(numpyArray2, task2Mid.gauss_seidel_numpy, N)
         times[0].append(listTime)
         times[1].append(arrayTime)
         times[2].append(numpyTime)
-
+        times[3].append(listTime2)
+        times[4].append(arrayTime2)
+        times[5].append(numpyTime2)
     return times, y
 
 
 
 if __name__ == "__main__":
     times, y = main()
-    plt.plot(y,times[0],label="List")
-    plt.plot(y,times[1],label="Array")
-    plt.plot(y,times[2],label="Numpy")
+    plt.loglog(y,times[0],label="List (various)")
+    plt.loglog(y,times[3],label="List (using cdef)")
+    plt.loglog(y,times[1],label="Array (various)")
+    plt.loglog(y,times[4],label="Array (using cdef)")
+    plt.loglog(y,times[2],label="Numpy (various)")
+    plt.loglog(y,times[5],label="Numpy (using cdef)")
     plt.legend()
     plt.show()
