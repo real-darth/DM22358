@@ -13,6 +13,16 @@ python -m venv venv
 source venv/scripts/activate
 ```
 
+### To build Cython
+Check Cython is installed
+```
+cython --version
+```
+Then run
+```
+python setup.py build_ext --inplace
+```
+
 For installing dependecies do 
 
 ```bash
