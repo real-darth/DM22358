@@ -13,13 +13,13 @@ def set_parameters():
     global param_N, param_Nt
     # set the parameters based on user input or default values
     print("Set simulation parameters. Leave blank if using default values.")
-    param_N = input("Enter the simulation parameter for [number of birds] [INTEGER]: ")
+    param_N = input("Enter the simulation parameter for [number of birds] (INTEGER): ")
     if param_N == None or param_N == "":
         param_N = DEFAULT_N_PARAMETER
     else:
         param_N = int(param_N)
     
-    param_Nt =  input("Enter the simulation parameter for [simulation time] [INTEGER]: ")
+    param_Nt = input("Enter the simulation parameter for [simulation time] (INTEGER): ")
     if param_Nt == None or param_Nt == "":
         param_Nt = DEFAULT_NT_PARAMETER
     else:

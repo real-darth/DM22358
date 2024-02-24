@@ -1,6 +1,20 @@
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
+import ctypes
+import os
+
+_getNeighbors = ctypes.CDLL(os.path.join(os.path.dirname(__file__),"getNeighbors.so"))
+
+TYPE_BOOL = ctypes.c_bool
+TYPE_INT = ctypes.c_int
+TYPE_DOUBLE = ctypes.c_double
+TYPE_DOUBLE_LIST = ctypes.POINTER(ctypes.c_double)
+TYPE_BOOL_LIST = ctypes.POINTER(ctypes.c_bool)
+
+_getNeighbors.neighbors.argtypes = [TYPE_DOUBLE_LIST, TYPE_DOUBLE_LIST, TYPE_INT,TYPE_INT, TYPE_INT, TYPE_BOOL_LIST]
+_getNeighbors.neighbors.restype = None
+
 
 """
 Simulate Viscek model for flocking birds.
@@ -46,6 +60,7 @@ def simulate_flocking(N, Nt, seed=17, params = {}):
         ax = plt.gca()
     
     # Simulation Main Loop
+    neighbors = np.ones(np.shape(x), dtype=bool)
     for i in range(Nt):
 
         # move
@@ -59,10 +74,27 @@ def simulate_flocking(N, Nt, seed=17, params = {}):
         # find mean angle of neighbors within R
         mean_theta = theta
         for b in range(N):
-            # optimization 1:
-            neighbors = (x-x[b])**2+(y-y[b])**2 < R**2
+            ## Optimization 1, improvement 1 (numpy vectorization)
+            # Reduces performance slightly 
+            '''x_a = (np.square(np.subtract(x,x[b])))
+            y_a = (np.square(np.subtract(y,y[b])))
+            neighbors = x_a + y_a < R**2'''
+
+            ## Optimization 1, improvement 2 (Run in C++)
+            # Significantly reduces performance
+            # Probably because no vectorization/parallelization is used
+            # It also stops passing the majority the unit tests, which also probably means I did the code wrong...
+            # Is almost 5 times slower
+            cN = TYPE_INT(N)
+            cb = TYPE_INT(b)
+            cR = TYPE_INT(R)
+            pointerX = x.ctypes.data_as(TYPE_DOUBLE_LIST)
+            pointerY = y.ctypes.data_as(TYPE_DOUBLE_LIST)
+            pointerRes = neighbors.ctypes.data_as(TYPE_BOOL_LIST)
+
+            _getNeighbors.neighbors(pointerX,pointerY,cN,cb,cR,pointerRes)
+            #neighbors = (x-x[b])**2+(y-y[b])**2 < R**2
             
-            # optimization 2:
             sx = np.sum(np.cos(theta[neighbors]))
             sy = np.sum(np.sin(theta[neighbors]))
 
