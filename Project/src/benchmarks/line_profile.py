@@ -5,13 +5,13 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from line_profiler import LineProfiler
 from simulate import simulate_flocking
-from benchmark import get_parameters
+from benchmark import parse_parameters_arguments
 
 def profile_simulation(func, N, Nt):
     """
     Run the cprofile simulation with the set parameters
     """
-    print("running line_profiler...")
+    print(f"running line_profiler with {N} birds...")
 
     # create a line-profiler
     profiler = LineProfiler()
@@ -33,8 +33,11 @@ def profile_simulation(func, N, Nt):
         profiler.print_stats(stream=f)
 
 if __name__== "__main__":
+    # parse command-line arguments
+    args = parse_parameters_arguments()
     # get parameters
-    N, Nt = get_parameters() 
+    N = args.num_birds
+    Nt = args.simulation_length
     # run simulation
     profile_simulation(None, N, Nt)
 

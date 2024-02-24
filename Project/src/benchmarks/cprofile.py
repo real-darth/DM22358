@@ -5,13 +5,13 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import cProfile
 from simulate import simulate_flocking
-from benchmark import get_parameters
+from benchmark import parse_parameters_arguments
 
 def profile_simulation(func, N, Nt):
     """
     Run the cprofile simulation with the set parameters
     """
-    print("running cProfile...")
+    print(f"running cProfile with {N} birds...")
 
     # run cProfiler on simulation
     profiler = cProfile.Profile()
@@ -26,9 +26,14 @@ def profile_simulation(func, N, Nt):
     # save results to a file
     profiler.dump_stats("benchmarks/results_cProfile/profiler_results.txt")
 
+
+
 if __name__== "__main__":
+    # parse command-line arguments
+    args = parse_parameters_arguments()
     # get parameters
-    N, Nt = get_parameters() 
+    N = args.num_birds
+    Nt = args.simulation_length
     # run simulation
     profile_simulation(None, N, Nt)
 

@@ -59,9 +59,14 @@ def simulate_flocking(N, Nt, seed=17, params = {}):
         # find mean angle of neighbors within R
         mean_theta = theta
         for b in range(N):
+            # optimization 1:
             neighbors = (x-x[b])**2+(y-y[b])**2 < R**2
+            
+            # optimization 2:
             sx = np.sum(np.cos(theta[neighbors]))
             sy = np.sum(np.sin(theta[neighbors]))
+
+            # optimization 3?:
             mean_theta[b] = np.arctan2(sy, sx)
             
         # add random perturbations
