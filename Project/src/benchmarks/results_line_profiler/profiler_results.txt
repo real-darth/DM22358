@@ -1,0 +1,106 @@
+Timer unit: 1e-07 s
+
+Total time: 52.928 s
+File: C:\Users\Win7\Documents\Group-2---High-Performance-Computing\Project\src\simulate.py
+Function: simulate_flocking at line 28
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    28                                           def simulate_flocking(N, Nt, seed=17, params = {}):
+    29                                               """Finite Volume simulation.
+    30                                               
+    31                                               Args:
+    32                                                   N (int): Number of birds simulated
+    33                                                   Nt (int): Simulation length, number of time steps
+    34                                                   Seed (int): Seed for the random numbers
+    35                                                   Params (dict): Optional dictionary containing specifications of parameters, like starting velocity, fluctuation etc
+    36                                               """
+    37                                               
+    38                                               # Simulation parameters
+    39         1          9.0      9.0      0.0      v0           = params.get('v0', 1.0)     # velocity
+    40         1          3.0      3.0      0.0      eta          = params.get('eta', 0.5)    # random fluctuation in angle (in radians)
+    41         1          3.0      3.0      0.0      L            = params.get('L', 10)       # size of box
+    42         1          2.0      2.0      0.0      R            = params.get('R', 1)        # interaction radius
+    43         1          2.0      2.0      0.0      dt           = params.get('dt', 0.2)     # time step
+    44         1          2.0      2.0      0.0      plotRealTime = params.get('plotRealTime', False)     # Flag for updating the graph in real-time
+    45                                               
+    46                                               # Initialize
+    47         1     726971.0 726971.0      0.1      cp.random.seed(seed)      # set the random number generator seed
+    48                                           
+    49                                               # bird positions
+    50         1    1044004.0    1e+06      0.2      x = cp.random.rand(N, 1)*L
+    51         1       1334.0   1334.0      0.0      y = cp.random.rand(N, 1)*L
+    52                                               
+    53                                               # bird velocities
+    54         1       8274.0   8274.0      0.0      theta = 2 * cp.pi * cp.random.rand(N,1)
+    55         1       8503.0   8503.0      0.0      vx = v0 * cp.cos(theta)
+    56         1       7992.0   7992.0      0.0      vy = v0 * cp.sin(theta)
+    57                                               
+    58                                               # Prep figure
+    59         1          3.0      3.0      0.0      if plotRealTime:
+    60                                                   fig = plt.figure(figsize=(4,4), dpi=80)
+    61                                                   ax = plt.gca()
+    62                                               
+    63                                               # Simulation Main Loop
+    64                                               #neighbors = cp.ones(cp.shape(x), dtype=bool)
+    65       201        961.0      4.8      0.0      for i in range(Nt):
+    66                                           
+    67                                                   # move
+    68       200      62087.0    310.4      0.0          x += vx*dt
+    69       200      42047.0    210.2      0.0          y += vy*dt
+    70                                                   
+    71                                                   # apply periodic BCs
+    72       200      65858.0    329.3      0.0          x = x % L
+    73       200      44959.0    224.8      0.0          y = y % L
+    74                                                   
+    75                                                   # find mean angle of neighbors within R
+    76       200       1403.0      7.0      0.0          mean_theta = theta
+    77    100200     360184.0      3.6      0.1          for b in range(N):
+    78                                           
+    79                                                       ## Optimization 1, improvement 1 (numpy vectorization)
+    80                                                       # Reduces performance slightly 
+    81                                                       '''x_a = (cp.square(cp.subtract(x,x[b])))
+    82                                                       y_a = (cp.square(cp.subtract(y,y[b])))
+    83                                                       neighbors = x_a + y_a < R**2'''
+    84                                           
+    85                                                       ## Optimization 1, improvement 2 (Run in C++)
+    86                                                       # Significantly reduces performance
+    87                                                       # Probably because no vectorization/parallelization is used
+    88                                                       # It also stops passing the majority the unit tests, which also probably means I did the code wrong...
+    89                                                       # Is almost 5 times slower
+    90                                                       '''cN = TYPE_INT(N)
+    91                                                       cb = TYPE_INT(b)
+    92                                                       cR = TYPE_INT(R)
+    93                                                       pointerX = x.ctypes.data_as(TYPE_DOUBLE_LIST)
+    94                                                       pointerY = y.ctypes.data_as(TYPE_DOUBLE_LIST)
+    95                                                       pointerRes = neighbors.ctypes.data_as(TYPE_BOOL_LIST)
+    96                                           
+    97                                                       _getNeighbors.neighbors(pointerX,pointerY,cN,cb,cR,pointerRes)'''
+    98                                           
+    99    100000   88842908.0    888.4     16.8              neighbors = (x-x[b])**2+(y-y[b])**2 < R**2
+   100    100000  244224649.0   2442.2     46.1              sx = cp.sum(cp.cos(theta[neighbors]))
+   101    100000  173558906.0   1735.6     32.8              sy = cp.sum(cp.sin(theta[neighbors]))
+   102    100000   19982634.0    199.8      3.8              mean_theta[b] = cp.arctan2(sy, sx)
+   103                                                       
+   104                                                   # add random perturbations
+   105       200     223298.0   1116.5      0.0          theta = mean_theta + eta*(cp.random.rand(N,1)-0.5)
+   106                                                   
+   107                                                   # update velocities
+   108       200      37609.0    188.0      0.0          vx = v0 * cp.cos(theta)
+   109       200      34665.0    173.3      0.0          vy = v0 * cp.sin(theta)
+   110                                                   # plot in real time
+   111       200        606.0      3.0      0.0          if plotRealTime: # or (i == Nt-1):
+   112                                                       plt.cla()
+   113                                                       plt.quiver(x,y,vx,vy)
+   114                                                       ax.set(xlim=(0, L), ylim=(0, L))
+   115                                                       ax.set_aspect('equal')    
+   116                                                       ax.get_xaxis().set_visible(False)
+   117                                                       ax.get_yaxis().set_visible(False)
+   118                                                       plt.pause(0.001)
+   119                                                           
+   120                                               # Save figure
+   121         1          3.0      3.0      0.0      if plotRealTime:
+   122                                                   plt.savefig('simulation_plots/activematter.png',dpi=240)
+   123                                                   plt.show()
+   124         1          3.0      3.0      0.0      return x, y
+

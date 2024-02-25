@@ -1,0 +1,46 @@
+## Base:
+
+Simulation Executed.
+
+ Performance counter stats for 'python3 simulate.py':
+
+                 0      cpu_core/cycles/          #    0.000 /sec
+                 0      cpu_core/instructions/    #    0.000 /sec
+                 0      cpu_core/cache-references/ #    0.000 /sec
+                 0      cpu_core/cache-misses/    #    0.000 /sec
+                 0      cpu_core/branches/        #    0.000 /sec
+                 0      cpu_core/branch-misses/   #    0.000 /sec
+           3052.53 msec task-clock                #    1.012 CPUs utilized
+              9344      faults                    #    3.061 K/sec
+              9177      minor-faults              #    3.006 K/sec
+             14645      cs                        #    4.798 K/sec
+                 9      migrations                #    2.948 /sec
+
+       3.014873816 seconds time elapsed
+
+       1.779024000 seconds user
+       1.326556000 seconds sys
+
+
+## Improvement:
+
+Simulation Executed.
+
+ Performance counter stats for 'python3 simulate.py':
+
+                 0      cpu_core/cycles/          #    0.000 /sec
+                 0      cpu_core/instructions/    #    0.000 /sec
+                 0      cpu_core/cache-references/ #    0.000 /sec
+                 0      cpu_core/cache-misses/    #    0.000 /sec
+                 0      cpu_core/branches/        #    0.000 /sec
+                 0      cpu_core/branch-misses/   #    0.000 /sec
+           3077.78 msec task-clock                #    0.989 CPUs utilized
+              9360      faults                    #    3.041 K/sec
+              9196      minor-faults              #    2.988 K/sec
+             14642      cs                        #    4.757 K/sec
+                 0      migrations                #    0.000 /sec
+
+       3.112029639 seconds time elapsed
+
+       1.640885000 seconds user
+       1.489126000 seconds sys
