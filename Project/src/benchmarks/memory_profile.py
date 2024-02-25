@@ -4,7 +4,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import fileinput
-from benchmark import get_parameters
+from benchmark import parse_parameters_arguments
 
 # very hacky solution
 def uncomment_profile_decorator(filepath):
@@ -19,9 +19,9 @@ def comment_profile_decorator(filepath):
             # remove profile from source
             print(line.replace("@profile", "#@profile"), end='')
 
-def profile_simulation():
+def profile_simulation(func, N, Nt):
 
-    print("running memory_profiler...")
+    print(f"running memory_profiler with {N} birds...")
 
     # path to the simulate.py module
     filepath = "simulate.py"
@@ -33,8 +33,6 @@ def profile_simulation():
     if not os.path.exists("benchmarks/results_memory_profiler"):
         os.makedirs("benchmarks/results_memory_profiler")
 
-    # get parameters
-    N, Nt = get_parameters()
     # set output path
     output_path = "benchmarks/results_memory_profiler/profiler_results.txt"
 
@@ -47,4 +45,10 @@ def profile_simulation():
     print("memory_profiler complete! Results output in 'results_memory_profiler'.")
 
 if __name__== "__main__":
-    profile_simulation()
+    # parse command-line arguments
+    args = parse_parameters_arguments()
+    # get parameters
+    N = args.num_birds
+    Nt = args.simulation_length
+    # run simulation
+    profile_simulation(None, N, Nt)
