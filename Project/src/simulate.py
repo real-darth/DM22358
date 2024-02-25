@@ -94,7 +94,9 @@ def simulate_flocking(N, Nt, seed=17, params = {}, start_x = [], start_y = [], s
         # find mean angle of neighbors within R
         mean_theta = theta
         # Calculate squared distances in one go
-        distances = (x.unsqueeze(1) - x) ** 2 + (y.unsqueeze(1) - y) ** 2
+        xx = x.clone().detach()
+        yy = y.clone().detach()
+        distances = (xx.unsqueeze(1) - x) ** 2 + (yy.unsqueeze(1) - y) ** 2
         # Mask out non-neighbors using broadcasting
         neighbors = distances < R**2
         # Vectorized sum of cosine and sine using masked reduction
