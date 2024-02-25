@@ -37,11 +37,11 @@ def timem(fn):
             result = fn(*args, **kwargs)
             t2 = ittimer()
             resultArray = np.append(resultArray, [t2 - t1])
-            print(f"@timefn: {fn.__name__} took {t2 - t1} seconds")
+            #print(f"@timefn: {fn.__name__} took {t2 - t1} seconds")
         avg = np.average(resultArray)
-        print(f"Average: {avg}")
+        #print(f"Average: {avg}")
         std = np.std(resultArray)
-        print(f"Standard deviation: {std}")
+        #print(f"Standard deviation: {std}")
         return  result,avg, std
 
     return measure_time
