@@ -55,10 +55,12 @@ def add_test(test_name, N=500, nt=200, seed=17, params={}) -> None:
         return
 
     # Fetch the simulated data results
-    x, y = simulate_flocking(N,nt,seed,params)
+    change_factor = np.random.rand(N,1)
+    x, y,start_x,start_y,startTheta = simulate_flocking(N,nt,seed,params,change_factor=change_factor)
 
     # Append inputs and outputs to the test
-    test_data = {"N":N,"nt":nt, "seed":seed, "params":params,"x": x, "y": y}
+    test_data = {"N":N,"nt":nt, "seed":seed, "params":params,"start_x":start_x,"start_y":start_y,
+                 "start_theta":startTheta,"change_factor":change_factor,"x": x, "y": y}
 
     tests[test_name] = test_data
     # Write test data to the JSON file
@@ -66,10 +68,10 @@ def add_test(test_name, N=500, nt=200, seed=17, params={}) -> None:
         json.dump(tests, write_file, cls=NumpyArrayEncoder, indent=4)
 
 if __name__== "__main__":
-    for i in range(40,60):
+    for i in range(40,60,8):
         name = "simple_test" + str(i*10)
         add_test(name,i*10)
-        for j in range(0,3):
+        for j in range(1,2):
             name = "v0=" + str(j) + "_test"
             add_test(name,i*10,params={'v0':j})
         

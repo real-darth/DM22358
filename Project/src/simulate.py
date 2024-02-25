@@ -11,7 +11,7 @@ Philip Mocz (2021) Princeton Univeristy, @PMocz
 """
 
 #@profile
-def simulate_flocking(N, Nt, seed=17, params = {}):
+def simulate_flocking(N, Nt, seed=17, params = {}, start_x = [], start_y = [], start_theta = [], change_factor = []):
     """Finite Volume simulation.
     
     Args:
@@ -27,20 +27,30 @@ def simulate_flocking(N, Nt, seed=17, params = {}):
     L            = params.get('L', 10)       # size of box
     R            = params.get('R', 1)        # interaction radius
     dt           = params.get('dt', 0.2)     # time step
-    plotRealTime = params.get('plotRealTime', False)     # Flag for updating the graph in real-time
+    plotRealTime = params.get('plotRealTime', False) # Flag for updating the graph in real-time
     
     # Initialize
     np.random.seed(seed)      # set the random number generator seed
-
     # bird positions
-    x = np.random.rand(N,1)*L
-    y = np.random.rand(N,1)*L
+    if len(start_x) == 0:
+        start_x = np.random.rand(N,1)*L
+        start_y = np.random.rand(N,1)*L
+
+    x = np.copy(start_x)
+    y = np.copy(start_y)
     
     # bird velocities
-    theta = 2 * np.pi * np.random.rand(N,1)
+    if len(start_theta) == 0:
+        start_theta = 2 * np.pi * np.random.rand(N,1)
+
+    theta = np.copy(start_theta)
     vx = v0 * np.cos(theta)
     vy = v0 * np.sin(theta)
     
+    use_rand_change = False
+    if len(change_factor) == 0:
+        use_rand_change = True
+
     # Prep figure
     if plotRealTime:
         fig = plt.figure(figsize=(4,4), dpi=80)
@@ -96,8 +106,11 @@ def simulate_flocking(N, Nt, seed=17, params = {}):
             mean_theta[b] = np.arctan2(sy, sx)
             
         # add random perturbations
-        theta = mean_theta + eta*(np.random.rand(N,1)-0.5)
-        
+        if use_rand_change:
+            theta = mean_theta + eta*(np.random.rand(N,1)-0.5)
+        else: 
+            theta = mean_theta + eta*(change_factor-0.5)
+
         # update velocities
         vx = v0 * np.cos(theta)
         vy = v0 * np.sin(theta)
@@ -115,7 +128,7 @@ def simulate_flocking(N, Nt, seed=17, params = {}):
     if plotRealTime:
         plt.savefig('simulation_plots/activematter.png',dpi=240)
         plt.show()
-    return x, y
+    return x, y, start_x, start_y, start_theta
 
 def main():
     N = 500

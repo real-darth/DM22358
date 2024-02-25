@@ -25,9 +25,10 @@ def get_test_data():
 
 
 # Could make improvement to not call get_test_data() twice
-@pytest.mark.parametrize('N, nt, seed, params, x, y', get_test_data().values(), ids=get_test_data().keys())
-def test_simulate(N, nt, seed, params, x, y):
-    res_x, res_y = simulate_flocking(N, nt, seed,params)
+@pytest.mark.parametrize('N, nt, seed, params, start_x,start_y,start_theta,change_factor, x, y', get_test_data().values(), ids=get_test_data().keys())
+def test_simulate(N, nt, seed, params,start_x,start_y,start_theta,change_factor, x, y):
+    res_x, res_y,_,_,_ = simulate_flocking(N, nt, seed,params,np.array(start_x),
+                                     np.array(start_y),np.array(start_theta),np.array(change_factor))
     print(res_x[0])
     print(x[0])
     print(res_y[0])
