@@ -1,6 +1,7 @@
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
+'''
 import ctypes
 import os
 
@@ -14,7 +15,7 @@ TYPE_BOOL_LIST = ctypes.POINTER(ctypes.c_bool)
 
 _getNeighbors.neighbors.argtypes = [TYPE_DOUBLE_LIST, TYPE_DOUBLE_LIST, TYPE_INT,TYPE_INT, TYPE_INT, TYPE_BOOL_LIST]
 _getNeighbors.neighbors.restype = None
-
+'''
 
 """
 Simulate Viscek model for flocking birds.
@@ -24,7 +25,7 @@ Philip Mocz (2021) Princeton Univeristy, @PMocz
 """
 
 #@profile
-def simulate_flocking(N, Nt, seed=17, params = {}):
+def simulate_flocking(N, Nt, seed=17, params = {}, start_x = [], start_y = [], start_theta = [], change_factor = []):
     """Finite Volume simulation.
     
     Args:
@@ -40,27 +41,37 @@ def simulate_flocking(N, Nt, seed=17, params = {}):
     L            = params.get('L', 10)       # size of box
     R            = params.get('R', 1)        # interaction radius
     dt           = params.get('dt', 0.2)     # time step
-    plotRealTime = params.get('plotRealTime', False)     # Flag for updating the graph in real-time
+    plotRealTime = params.get('plotRealTime', False) # Flag for updating the graph in real-time
     
     # Initialize
     np.random.seed(seed)      # set the random number generator seed
-
     # bird positions
-    x = np.random.rand(N,1)*L
-    y = np.random.rand(N,1)*L
+    if len(start_x) == 0:
+        start_x = np.random.rand(N,1)*L
+        start_y = np.random.rand(N,1)*L
+
+    x = np.copy(start_x)
+    y = np.copy(start_y)
     
     # bird velocities
-    theta = 2 * np.pi * np.random.rand(N,1)
+    if len(start_theta) == 0:
+        start_theta = 2 * np.pi * np.random.rand(N,1)
+
+    theta = np.copy(start_theta)
     vx = v0 * np.cos(theta)
     vy = v0 * np.sin(theta)
     
+    use_rand_change = False
+    if len(change_factor) == 0:
+        use_rand_change = True
+
     # Prep figure
     if plotRealTime:
         fig = plt.figure(figsize=(4,4), dpi=80)
         ax = plt.gca()
     
     # Simulation Main Loop
-    neighbors = np.ones(np.shape(x), dtype=bool)
+    #neighbors = np.ones(np.shape(x), dtype=bool)
     for i in range(Nt):
 
         # move
@@ -86,22 +97,25 @@ def simulate_flocking(N, Nt, seed=17, params = {}):
             # Probably because no vectorization/parallelization is used
             # It also stops passing the majority the unit tests, which also probably means I did the code wrong...
             # Is almost 5 times slower
-            cN = TYPE_INT(N)
+            '''cN = TYPE_INT(N)
             cb = TYPE_INT(b)
             cR = TYPE_INT(R)
             pointerX = x.ctypes.data_as(TYPE_DOUBLE_LIST)
             pointerY = y.ctypes.data_as(TYPE_DOUBLE_LIST)
             pointerRes = neighbors.ctypes.data_as(TYPE_BOOL_LIST)
 
-            _getNeighbors.neighbors(pointerX,pointerY,cN,cb,cR,pointerRes)
-            #neighbors = (x-x[b])**2+(y-y[b])**2 < R**2
+            _getNeighbors.neighbors(pointerX,pointerY,cN,cb,cR,pointerRes)'''
+            neighbors = (x-x[b])**2+(y-y[b])**2 < R**2
             sx = np.sum(np.cos(theta[neighbors]))
             sy = np.sum(np.sin(theta[neighbors]))
             mean_theta[b] = np.arctan2(sy, sx)
             
         # add random perturbations
-        theta = mean_theta + eta*(np.random.rand(N,1)-0.5)
-        
+        if use_rand_change:
+            theta = mean_theta + eta*(np.random.rand(N,1)-0.5)
+        else: 
+            theta = mean_theta + eta*(change_factor-0.5)
+
         # update velocities
         vx = v0 * np.cos(theta)
         vy = v0 * np.sin(theta)
@@ -119,7 +133,7 @@ def simulate_flocking(N, Nt, seed=17, params = {}):
     if plotRealTime:
         plt.savefig('simulation_plots/activematter.png',dpi=240)
         plt.show()
-    return x, y
+    return x, y, start_x, start_y, start_theta
 
 def main():
     N = 500
