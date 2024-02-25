@@ -4,8 +4,6 @@ import numpy as np
 import os
 from simulate import simulate_flocking
 
-
-
 def get_test_data():
 
     # Get the path to the test data

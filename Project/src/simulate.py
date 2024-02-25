@@ -64,9 +64,9 @@ def simulate_flocking(N, Nt, seed=17, params = {}, start_x = [], start_y = [], s
     neighbors_array = np.ones(np.shape(x), dtype=np.intc)
     neighbors_flattened = neighbors_array.flatten()
 
-    print(np.shape(neighbors_flattened))
-    print(np.shape(x))
-    print(np.shape(y))
+    #print(np.shape(neighbors_flattened))
+    #print(np.shape(x))
+    #print(np.shape(y))
 
     # Simulation Main Loop
     for i in range(Nt):
