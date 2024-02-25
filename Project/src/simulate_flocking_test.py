@@ -2,15 +2,15 @@ import pytest
 import json
 import numpy as np
 import os
-from simulate import simulate_flocking
+from simulate import simulate_flocking, calc_loop_value, calculate_mean_theta, calculate_mean_theta_vect, calculate_mean_theta_torch
 
 
 
-def get_test_data():
+def get_test_data(name):
 
     # Get the path to the test data
     current_dir = os.path.dirname(__file__)
-    json_file_path = os.path.join(current_dir, 'test_suite', 'test_data.json')
+    json_file_path = os.path.join(current_dir, 'test_suite', name)
 
     f = open(json_file_path)
     testList = {}
@@ -25,6 +25,7 @@ def get_test_data():
 
 
 # Could make improvement to not call get_test_data() twice
+'''
 @pytest.mark.parametrize('N, nt, seed, params, start_x,start_y,start_theta,change_factor, x, y', get_test_data().values(), ids=get_test_data().keys())
 def test_simulate(N, nt, seed, params,start_x,start_y,start_theta,change_factor, x, y):
     res_x, res_y,_,_,_ = simulate_flocking(N, nt, seed,params,np.array(start_x),
@@ -35,3 +36,24 @@ def test_simulate(N, nt, seed, params,start_x,start_y,start_theta,change_factor,
     print(y[0])
     assert np.array_equal(np.around(res_x,5),np.around(x,5))
     assert np.array_equal(np.around(res_y,5),np.around(y,5))
+'''
+
+# Could make improvement to not call get_test_data() twice
+@pytest.mark.parametrize('x, y,theta,b, R, res', get_test_data("test_data_loop.json").values(), ids=get_test_data("test_data_loop.json").keys())
+def test_calculate_mean_singular(x, y,theta,b, R, res):
+    result = calc_loop_value(np.array(x),np.array(y),b,R,np.array(theta))
+    print("Result was: ", result)
+    print("It should be: ", res)
+    assert result == res
+
+@pytest.mark.parametrize('x, y,theta, R, res', get_test_data("test_data_whole_loop.json").values(), ids=get_test_data("test_data_whole_loop.json").keys())
+def test_calculate_mean(x, y,theta,R, res):
+    result_norm,_,_ = calculate_mean_theta(np.array(x),np.array(y),np.array(theta),R)
+    result_vect,_,_ = calculate_mean_theta_vect(np.array(x),np.array(y),np.array(theta),R)
+    result_torch,_,_ = calculate_mean_theta_torch(np.array(x),np.array(y),np.array(theta),R)
+    print("Result was (for normal): ", result_norm)
+    print("Result was (for vect): ", result_vect)
+    print("It should be: ", res)
+    assert np.array_equal(np.around(np.array(res)),np.around(result_norm))
+    assert np.array_equal(np.around(result_vect),np.around(result_norm))
+    assert np.array_equal(np.around(result_torch.numpy()),np.around(result_norm))

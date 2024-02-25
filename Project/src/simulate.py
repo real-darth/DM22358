@@ -1,6 +1,8 @@
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
+from functools import wraps
+import torch
 '''
 import ctypes
 import os
@@ -23,6 +25,27 @@ Simulate Viscek model for flocking birds.
 Script based on code made originaly by 
 Philip Mocz (2021) Princeton Univeristy, @PMocz
 """
+
+def timem(fn):
+    from timeit import default_timer as ittimer
+
+    @wraps(fn)
+    def measure_time(*args, **kwargs):
+        resultArray = np.array([])
+        for _ in range(5):
+            t1 = ittimer()
+            result = fn(*args, **kwargs)
+            t2 = ittimer()
+            resultArray = np.append(resultArray, [t2 - t1])
+            print(f"@timefn: {fn.__name__} took {t2 - t1} seconds")
+        avg = np.average(resultArray)
+        print(f"Average: {avg}")
+        std = np.std(resultArray)
+        print(f"Standard deviation: {std}")
+        return  result,avg, std
+
+    return measure_time
+
 
 #@profile
 def simulate_flocking(N, Nt, seed=17, params = {}, start_x = [], start_y = [], start_theta = [], change_factor = []):
@@ -83,33 +106,7 @@ def simulate_flocking(N, Nt, seed=17, params = {}, start_x = [], start_y = [], s
         y = y % L
         
         # find mean angle of neighbors within R
-        mean_theta = theta
-        for b in range(N):
-            ## Optimization 1, improvement 1 (numpy vectorization)
-            # Reduces performance slightly 
-            '''x_a = (np.square(np.subtract(x,x[b])))
-            y_a = (np.square(np.subtract(y,y[b])))
-            neighbors = x_a + y_a < R**2'''
-
-            ## Optimization 1, improvement 2 (Run in C++)
-            # Significantly reduces performance
-            # Probably because no vectorization/parallelization is used
-            # It also stops passing the majority the unit tests, which also probably means I did the code wrong...
-            # Is almost 5 times slower
-            '''cN = TYPE_INT(N)
-            cb = TYPE_INT(b)
-            cR = TYPE_INT(R)
-            pointerX = x.ctypes.data_as(TYPE_DOUBLE_LIST)
-            pointerY = y.ctypes.data_as(TYPE_DOUBLE_LIST)
-            pointerRes = neighbors.ctypes.data_as(TYPE_BOOL_LIST)
-
-            _getNeighbors.neighbors(pointerX,pointerY,cN,cb,cR,pointerRes)'''
-            neighbors = (x-x[b])**2+(y-y[b])**2 < R**2
-            sx = np.sum(np.cos(theta[neighbors]))
-            sy = np.sum(np.sin(theta[neighbors]))
-
-            # optimization 3?:
-            mean_theta[b] = np.arctan2(sy, sx)
+        mean_theta = calculate_mean_theta(x,y,theta,R)
             
         # add random perturbations
         if use_rand_change:
@@ -135,6 +132,83 @@ def simulate_flocking(N, Nt, seed=17, params = {}, start_x = [], start_y = [], s
         plt.savefig('simulation_plots/activematter.png',dpi=240)
         plt.show()
     return x, y, start_x, start_y, start_theta
+
+@timem
+def calculate_mean_theta(x, y, theta, R):
+    N = len(x)
+    mean_theta = np.zeros((N, 1))
+
+    for b in range(N):
+        # When making changes in this loop, please also change calc_loop_value if possible
+        mean_theta[b] = calc_loop_value(x,y,b,R,theta)
+
+    return mean_theta
+
+@timem
+def calculate_mean_theta_vect(x, y, theta, R):
+    N = len(x)
+    mean_theta = np.zeros((N, 1))
+
+    diff_squared = (x[:, np.newaxis] - x) ** 2 + (y[:, np.newaxis] - y) ** 2
+
+    neighbors = diff_squared < R**2
+
+    # Compute summed cosine and sine values using advanced indexing
+    sx = np.sum(np.cos(theta) * neighbors, axis=1)
+    sy = np.sum(np.sin(theta) * neighbors, axis=1)
+
+    # Compute mean_theta using arctan2
+    mean_theta = np.arctan2(sy, sx)
+
+    return mean_theta
+
+@timem
+def calculate_mean_theta_torch(x, y, theta, R):
+    x = torch.from_numpy(x)
+    y = torch.from_numpy(y)
+    theta = torch.from_numpy(theta)
+    N = len(x)
+    mean_theta = torch.zeros((N, 1))
+    diff_squared = (x.unsqueeze(1) - x) ** 2 + (y.unsqueeze(1) - y) ** 2
+    neighbors = diff_squared < R**2
+    # Compute summed cosine and sine values using advanced indexing
+    sx = torch.sum(torch.cos(theta) * neighbors, dim=1)
+    sy = torch.sum(torch.sin(theta) * neighbors, dim=1)
+    # Compute mean_theta using arctan2
+    mean_theta = torch.atan2(sy, sx)
+
+    return mean_theta
+
+
+## Is right now the original code...
+def calc_loop_value(x,y,b,R,theta):
+        ## Optimization 1, improvement 1 (numpy vectorization)
+        # Reduces performance slightly 
+        '''x_a = (np.square(np.subtract(x,x[b])))
+        y_a = (np.square(np.subtract(y,y[b])))
+        neighbors = x_a + y_a < R**2'''
+
+        ## Optimization 1, improvement 2 (Run in C++)
+        # Significantly reduces performance
+        # Probably because no vectorization/parallelization is used
+        # It also stops passing the majority the unit tests, which also probably means I did the code wrong...
+        # Is almost 5 times slower
+        '''cN = TYPE_INT(N)
+        cb = TYPE_INT(b)
+        cR = TYPE_INT(R)
+        pointerX = x.ctypes.data_as(TYPE_DOUBLE_LIST)
+        pointerY = y.ctypes.data_as(TYPE_DOUBLE_LIST)
+        pointerRes = neighbors.ctypes.data_as(TYPE_BOOL_LIST)
+
+        _getNeighbors.neighbors(pointerX,pointerY,cN,cb,cR,pointerRes)'''
+        neighbors = (x-x[b])**2+(y-y[b])**2 < R**2
+        sx = np.sum(np.cos(theta[neighbors]))
+        sy = np.sum(np.sin(theta[neighbors]))
+
+        # optimization 3?:
+        val = np.arctan2(sy, sx)
+
+        return val
 
 def main():
     N = 500
