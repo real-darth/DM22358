@@ -2,7 +2,7 @@ import pytest
 import json
 import numpy as np
 import os
-from simulate import simulate_flocking, calc_loop_value, calculate_mean_theta, calculate_mean_theta_vect, calculate_mean_theta_torch
+from simulate import simulate_flocking, calc_loop_value, calculate_mean_theta, calculate_mean_theta_vect, calculate_mean_theta_torch, calcualte_mean_theta_cython
 
 
 
@@ -51,9 +51,11 @@ def test_calculate_mean(x, y,theta,R, res):
     result_norm,_,_ = calculate_mean_theta(np.array(x),np.array(y),np.array(theta),R)
     result_vect,_,_ = calculate_mean_theta_vect(np.array(x),np.array(y),np.array(theta),R)
     result_torch,_,_ = calculate_mean_theta_torch(np.array(x),np.array(y),np.array(theta),R)
+    result_cython,_,_ = calcualte_mean_theta_cython(np.array(x),np.array(y),np.array(theta),R)
     print("Result was (for normal): ", result_norm)
-    print("Result was (for vect): ", result_vect)
+    print("Result was (for cython): ", result_cython)
     print("It should be: ", res)
     assert np.array_equal(np.around(np.array(res)),np.around(result_norm))
     assert np.array_equal(np.around(result_vect),np.around(result_norm))
     assert np.array_equal(np.around(result_torch.numpy()),np.around(result_norm))
+    assert np.array_equal(np.around(result_cython),np.around(result_norm))

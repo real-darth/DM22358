@@ -3,21 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from functools import wraps
 import torch
-'''
-import ctypes
-import os
-
-_getNeighbors = ctypes.CDLL(os.path.join(os.path.dirname(__file__),"getNeighbors.so"))
-
-TYPE_BOOL = ctypes.c_bool
-TYPE_INT = ctypes.c_int
-TYPE_DOUBLE = ctypes.c_double
-TYPE_DOUBLE_LIST = ctypes.POINTER(ctypes.c_double)
-TYPE_BOOL_LIST = ctypes.POINTER(ctypes.c_bool)
-
-_getNeighbors.neighbors.argtypes = [TYPE_DOUBLE_LIST, TYPE_DOUBLE_LIST, TYPE_INT,TYPE_INT, TYPE_INT, TYPE_BOOL_LIST]
-_getNeighbors.neighbors.restype = None
-'''
+import tester
 
 """
 Simulate Viscek model for flocking birds.
@@ -106,8 +92,10 @@ def simulate_flocking(N, Nt, seed=17, params = {}, start_x = [], start_y = [], s
         y = y % L
         
         # find mean angle of neighbors within R
-        mean_theta = calculate_mean_theta(x,y,theta,R)
-            
+        # IF WE HAVE TIME WRAPPER, WE NEED TO REMOVE THE TIMES AS WELL
+        #mean_theta, _, _ = calculate_mean_theta(x,y,theta,R)
+        mean_theta, _, _ = calcualte_mean_theta_cython(x,y,theta,R)
+
         # add random perturbations
         if use_rand_change:
             theta = mean_theta + eta*(np.random.rand(N,1)-0.5)
@@ -137,7 +125,6 @@ def simulate_flocking(N, Nt, seed=17, params = {}, start_x = [], start_y = [], s
 def calculate_mean_theta(x, y, theta, R):
     N = len(x)
     mean_theta = np.zeros((N, 1))
-
     for b in range(N):
         # When making changes in this loop, please also change calc_loop_value if possible
         mean_theta[b] = calc_loop_value(x,y,b,R,theta)
@@ -179,6 +166,15 @@ def calculate_mean_theta_torch(x, y, theta, R):
 
     return mean_theta
 
+@timem
+def calcualte_mean_theta_cython(x, y, theta, R):
+    N = len(x)
+    mean_theta = np.zeros((N, 1))
+    #print("before", mean_theta)
+    flatten = mean_theta.flatten()
+    tester.calculate_mean_theta(x.flatten(), y.flatten(), theta.flatten(), N, R, flatten)
+    # print("after", flatten)
+    return flatten.reshape(x.shape)
 
 ## Is right now the original code...
 def calc_loop_value(x,y,b,R,theta):
@@ -201,6 +197,7 @@ def calc_loop_value(x,y,b,R,theta):
         pointerRes = neighbors.ctypes.data_as(TYPE_BOOL_LIST)
 
         _getNeighbors.neighbors(pointerX,pointerY,cN,cb,cR,pointerRes)'''
+        
         neighbors = (x-x[b])**2+(y-y[b])**2 < R**2
         sx = np.sum(np.cos(theta[neighbors]))
         sy = np.sum(np.sin(theta[neighbors]))
@@ -225,5 +222,14 @@ def main():
 
 # if this file is run by itself, run a basic simulation
 if __name__== "__main__":
+    '''
+    test = "cuda" if torch.cuda.is_available() else "cpu"
+    if test == "cpu":
+        print("ABORT, CPU WAS SELECTED")
+    else:
+        main()
+        print("Simulation Executed.")
+    '''
+
     main()
     print("Simulation Executed.")
