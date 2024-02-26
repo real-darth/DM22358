@@ -167,6 +167,27 @@ def calculate_mean_theta_torch(x, y, theta, R):
     return mean_theta
 
 @timem
+def calculate_mean_theta_conc(
+    x: np.ndarray, y: np.ndarray, theta: np.ndarray, R: float
+) -> np.ndarray:
+    N = len(x)
+    mean_theta = np.zeros((N, 1))
+
+    def process_data(b):
+        neighbors = (x - x[b]) ** 2 + (y - y[b]) ** 2 < R**2
+        sx = np.sum(np.cos(theta[neighbors]))
+        sy = np.sum(np.sin(theta[neighbors]))
+        return np.arctan2(sy, sx)
+
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        futures = [executor.submit(process_data, b) for b in range(N)]
+        for b, future in enumerate(futures):
+            mean_theta[b] = future.result()
+
+    return mean_theta
+
+
+@timem
 def calcualte_mean_theta_cython(x, y, theta, R):
     N = len(x)
     mean_theta = np.zeros((N, 1))
