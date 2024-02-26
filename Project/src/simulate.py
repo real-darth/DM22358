@@ -4,6 +4,8 @@ import numpy as np
 from functools import wraps
 import torch
 import tester
+from concurrent.futures import ThreadPoolExecutor
+import cupy as cp
 
 """
 Simulate Viscek model for flocking birds.
@@ -163,6 +165,26 @@ def calculate_mean_theta_torch(x, y, theta, R):
     sy = torch.sum(torch.sin(theta) * neighbors, dim=1)
     # Compute mean_theta using arctan2
     mean_theta = torch.atan2(sy, sx)
+
+    return mean_theta
+
+@timem
+def calculate_mean_theta_cupy(x, y, theta, R):
+    x = cp.array(x)
+    y = cp.array(y)
+    theta = cp.array(theta)
+    N = len(x)
+    mean_theta = cp.zeros((N, 1))
+    diff_squared = (x[:, cp.newaxis] - x) ** 2 + (y[:, cp.newaxis] - y) ** 2
+
+    neighbors = diff_squared < R**2
+
+    # Compute summed cosine and sine values using advanced indexing
+    sx = cp.sum(cp.cos(theta) * neighbors, axis=1)
+    sy = cp.sum(cp.sin(theta) * neighbors, axis=1)
+
+    # Compute mean_theta using arctan2
+    mean_theta = cp.arctan2(sy, sx)
 
     return mean_theta
 
