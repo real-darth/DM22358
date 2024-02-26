@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
@@ -221,25 +222,6 @@ def calcualte_mean_theta_cython(x, y, theta, R):
 
 ## Is right now the original code...
 def calc_loop_value(x,y,b,R,theta):
-        ## Optimization 1, improvement 1 (numpy vectorization)
-        # Reduces performance slightly 
-        '''x_a = (np.square(np.subtract(x,x[b])))
-        y_a = (np.square(np.subtract(y,y[b])))
-        neighbors = x_a + y_a < R**2'''
-
-        ## Optimization 1, improvement 2 (Run in C++)
-        # Significantly reduces performance
-        # Probably because no vectorization/parallelization is used
-        # It also stops passing the majority the unit tests, which also probably means I did the code wrong...
-        # Is almost 5 times slower
-        '''cN = TYPE_INT(N)
-        cb = TYPE_INT(b)
-        cR = TYPE_INT(R)
-        pointerX = x.ctypes.data_as(TYPE_DOUBLE_LIST)
-        pointerY = y.ctypes.data_as(TYPE_DOUBLE_LIST)
-        pointerRes = neighbors.ctypes.data_as(TYPE_BOOL_LIST)
-
-        _getNeighbors.neighbors(pointerX,pointerY,cN,cb,cR,pointerRes)'''
         
         neighbors = (x-x[b])**2+(y-y[b])**2 < R**2
         sx = np.sum(np.cos(theta[neighbors]))
