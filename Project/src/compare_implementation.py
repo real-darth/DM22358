@@ -10,7 +10,7 @@ from simulate import calculate_mean_theta, calculate_mean_theta_vect, calculate_
 R = 1
 # do a performance comparison
 
-sizes = range(5000, 20_000, 5_000)
+sizes = range(1000, 50_000, 2_500)
 Nt = 500
 avgs = [[], [],[], [], [], []]
 stds = [[], [],[], [], [], []]

@@ -6,6 +6,8 @@ import torch
 import tester
 from concurrent.futures import ThreadPoolExecutor
 import cupy as cp
+import imageio
+import os
 
 """
 Simulate Viscek model for flocking birds.
@@ -36,7 +38,7 @@ def timem(fn):
 
 
 #@profile
-def simulate_flocking(N, Nt, seed=17, params = {}, start_x = [], start_y = [], start_theta = [], change_factor = []):
+def simulate_flocking(N, Nt, seed=0, params = {}, start_x = [], start_y = [], start_theta = [], change_factor = []):
     """Finite Volume simulation.
     
     Args:
@@ -50,10 +52,10 @@ def simulate_flocking(N, Nt, seed=17, params = {}, start_x = [], start_y = [], s
     v0           = params.get('v0', 1.0)     # velocity
     eta          = params.get('eta', 0.5)    # random fluctuation in angle (in radians)
     L            = params.get('L', 10)       # size of box
-    R            = params.get('R', 1)        # interaction radius
+    R            = params.get('R', 0.4)        # interaction radius
     dt           = params.get('dt', 0.2)     # time step
-    plotRealTime = params.get('plotRealTime', False) # Flag for updating the graph in real-time
-    
+    plotRealTime = params.get('plotRealTime', True) # Flag for updating the graph in real-time
+    frameNum = 0
     # Initialize
     np.random.seed(seed)      # set the random number generator seed
     # bird positions
@@ -78,7 +80,7 @@ def simulate_flocking(N, Nt, seed=17, params = {}, start_x = [], start_y = [], s
 
     # Prep figure
     if plotRealTime:
-        fig = plt.figure(figsize=(4,4), dpi=80)
+        fig = plt.figure(figsize=(4,4), dpi=240)
         ax = plt.gca()
     
     # Simulation Main Loop
@@ -96,7 +98,7 @@ def simulate_flocking(N, Nt, seed=17, params = {}, start_x = [], start_y = [], s
         # find mean angle of neighbors within R
         # IF WE HAVE TIME WRAPPER, WE NEED TO REMOVE THE TIMES AS WELL
         #mean_theta, _, _ = calculate_mean_theta(x,y,theta,R)
-        mean_theta, _, _ = calcualte_mean_theta_cython(x,y,theta,R)
+        mean_theta, _, _ = calculate_mean_theta_vect(x,y,theta,R)
 
         # add random perturbations
         if use_rand_change:
@@ -115,13 +117,31 @@ def simulate_flocking(N, Nt, seed=17, params = {}, start_x = [], start_y = [], s
             ax.set_aspect('equal')    
             ax.get_xaxis().set_visible(False)
             ax.get_yaxis().set_visible(False)
-            plt.pause(0.001)
+            plt.savefig(f'img/img_{frameNum}.png', 
+                transparent = False,  
+                facecolor = 'white'
+               )
+            frameNum += 1
+            #plt.pause(0.001)
                 
     # Save figure
     if plotRealTime:
-        plt.savefig('simulation_plots/activematter.png',dpi=240)
-        plt.show()
+        #plt.savefig('simulation_plots/activematter.png',dpi=240)
+        #plt.show()
+        create_gif(frameNum)
     return x, y, start_x, start_y, start_theta
+
+
+def create_gif(frameNum):
+    frames = []
+    for t in range(frameNum):
+        image = imageio.v2.imread(f'img/img_{t}.png')
+        frames.append(image)
+    imageio.mimsave('../gifs/example.gif', # output gif
+                frames,          # array of input frames
+                fps = 1000)         # optional: frames per second
+    for t in range(frameNum):
+        os.remove(f'img/img_{t}.png')
 
 @timem
 def calculate_mean_theta(x, y, theta, R):
@@ -251,7 +271,7 @@ def calc_loop_value(x,y,b,R,theta):
         return val
 
 def main():
-    N = 500
+    N = 1000
     Nt = 200
 
     # check if the necessary parameters are present
