@@ -19,7 +19,7 @@ def comment_profile_decorator(filepath):
             # remove profile from source
             print(line.replace("@profile", "#@profile"), end='')
 
-def profile_simulation(func, N, Nt):
+def profile_simulation(simulation, N, Nt):
 
     print(f"running memory_profiler with {N} birds...")
 
@@ -34,10 +34,10 @@ def profile_simulation(func, N, Nt):
         os.makedirs("benchmarks/results_memory_profiler")
 
     # set output path
-    output_path = "benchmarks/results_memory_profiler/profiler_results.txt"
+    output_path = f"benchmarks/results_memory_profiler/mpout_{simulation}_n_{N}.txt"
 
     # run the memory profiler and save the output to a file
-    os.system(sys.executable + " -m memory_profiler simulate.py " + str(N) + " " + str(Nt) + " > " + output_path)
+    os.system(sys.executable + " -m memory_profiler simulate.py " + str(N) + " " + str(Nt) + str(simulation) + " > " + output_path)
 
     # comment the @profile decorator
     comment_profile_decorator(filepath)
@@ -50,5 +50,6 @@ if __name__== "__main__":
     # get parameters
     N = args.num_birds
     Nt = args.simulation_length
+    sim = args.simulation_type
     # run simulation
-    profile_simulation(None, N, Nt)
+    profile_simulation(sim, N, Nt)

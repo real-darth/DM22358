@@ -1,6 +1,5 @@
 cimport numpy as cnp
 from libc.math cimport cos, sin, atan2
-from cython.parallel import prange
 cimport cython
 
 @cython.boundscheck(False)  # Deactivate bounds checking
@@ -12,7 +11,7 @@ cdef void _calculate_mean_theta(double[::1] x, double[::1] y, double[::1] theta,
     for b in range(N):
         sx = 0
         sy = 0
-        for i in prange(b + 1, N):
+        for i in range(N):
             dist_squared = (x[i] - x[b]) ** 2 + (y[i] - y[b]) ** 2
             if dist_squared < R_squared:
                 sx += cos(theta[i])

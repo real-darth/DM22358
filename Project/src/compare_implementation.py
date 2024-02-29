@@ -10,11 +10,15 @@ from simulate import calculate_mean_theta, calculate_mean_theta_vect, calculate_
 R = 1
 # do a performance comparison
 
-sizes = range(5000, 20_000, 5_000)
+print("Running comparision, this might take a while...")
+
+sizes = range(2_000, 15_000, 1000) #[500, 1000, 2000, 5000, 10_000, 12_000, 15_000, 17_000]
 Nt = 500
 avgs = [[], [],[], [], [], []]
 stds = [[], [],[], [], [], []]
 for N in sizes:  # [500, 1000, 1500, 2000]:
+    #if N % 10_000 == 0:
+    # print(f"Reached N = {N}")
     theta = np.random.rand(N)
     x = np.random.rand(N)
     y = np.random.rand(N)
@@ -36,6 +40,7 @@ for N in sizes:  # [500, 1000, 1500, 2000]:
     _, avg, std = calculate_mean_theta_cupy(x, y, theta, R)
     avgs[5].append(avg)
     stds[5].append(std)
+
 # plot
 plt.errorbar(sizes, avgs[0], yerr=stds[0], label="standard")
 plt.errorbar(sizes, avgs[1], yerr=stds[1], label="vectorized")

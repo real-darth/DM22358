@@ -15,8 +15,9 @@ dependencies = [
     "matplotlib",
     "numpy",
     "Cython",
-    "torch",
+    "cupy",
 ]
+
 readme = "README.md"
 
 [project.optional-dependencies]

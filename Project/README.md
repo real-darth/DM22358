@@ -24,6 +24,11 @@ And for developmnet dependencies (needed to run tests) do:
 pip install ".[dev]"
 ```
 
+### Install CuPy
+```bash
+pip install torch --index-url https://download.pytorch.org/whl/cu121
+```
+
 ### To build Cython
 Check Cython is installed
 ```
@@ -38,6 +43,10 @@ python setup.py build_ext --inplace
 To run the unit-tests, execute the following command
 ```
 python -m pytest
+```
+or
+```bash
+pytest simulate_flocking_test.py
 ```
 
 Moreover, you are encouraged to install the pre-commit hooks, so that black and the flake8 run before every commit:

@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from functools import wraps
 import torch
-import tester
+import cython_mean_theta
 from concurrent.futures import ThreadPoolExecutor
 import cupy as cp
 
@@ -37,7 +37,7 @@ def timem(fn):
 
 
 #@profile
-def simulate_flocking(N, Nt, seed=17, params = {}, start_x = [], start_y = [], start_theta = [], change_factor = []):
+def simulate_flocking(N, Nt, simulation=0, seed=17, params = {}, start_x = [], start_y = [], start_theta = [], change_factor = []):
     """Finite Volume simulation.
     
     Args:
@@ -57,6 +57,7 @@ def simulate_flocking(N, Nt, seed=17, params = {}, start_x = [], start_y = [], s
     
     # Initialize
     np.random.seed(seed)      # set the random number generator seed
+    
     # bird positions
     if len(start_x) == 0:
         start_x = np.random.rand(N,1)*L
@@ -97,7 +98,23 @@ def simulate_flocking(N, Nt, seed=17, params = {}, start_x = [], start_y = [], s
         # find mean angle of neighbors within R
         # IF WE HAVE TIME WRAPPER, WE NEED TO REMOVE THE TIMES AS WELL
         #mean_theta, _, _ = calculate_mean_theta(x,y,theta,R)
-        mean_theta, _, _ = calcualte_mean_theta_cython(x,y,theta,R)
+        #mean_theta, _, _ = calcualte_mean_theta_cython(x,y,theta,R)
+
+        # select the correct simulation type
+        if (simulation == 0):
+            mean_theta, _, _ = calculate_mean_theta(x,y,theta,R)
+        elif (simulation == 1):
+            mean_theta, _, _ = calculate_mean_theta_vect(x,y,theta,R)
+        elif (simulation == 2):
+            mean_theta, _, _ = calculate_mean_theta_torch(x,y,theta,R)
+        elif (simulation == 3):
+            mean_theta, _, _ = calcualte_mean_theta_cython(x,y,theta,R)
+        elif (simulation == 4):
+            mean_theta, _, _ = calculate_mean_theta_conc(x,y,theta,R)
+        elif (simulation == 5):
+            mean_theta, _, _ = calculate_mean_theta_cupy(x,y,theta,R)
+        else:
+            print("[ERROR] mean theta not defined, some parameter is missing...")
 
         # add random perturbations
         if use_rand_change:
@@ -129,10 +146,21 @@ def calculate_mean_theta(x, y, theta, R):
     N = len(x)
     mean_theta = np.zeros((N, 1))
     for b in range(N):
-        # When making changes in this loop, please also change calc_loop_value if possible
-        mean_theta[b] = calc_loop_value(x,y,b,R,theta)
-
+        neighbors = (x-x[b])**2+(y-y[b])**2 < R**2
+        sx = np.sum(np.cos(theta[neighbors]))
+        sy = np.sum(np.sin(theta[neighbors]))
+        val = np.arctan2(sy, sx)
+        mean_theta[b] = val
     return mean_theta
+
+def calc_loop_value(x, y, b, R, theta):
+    '''Used for unit testing only
+    '''
+    neighbors = (x-x[b])**2+(y-y[b])**2 < R**2
+    sx = np.sum(np.cos(theta[neighbors]))
+    sy = np.sum(np.sin(theta[neighbors]))
+    val = np.arctan2(sy, sx)
+    return val
 
 @timem
 def calculate_mean_theta_vect(x, y, theta, R):
@@ -154,11 +182,12 @@ def calculate_mean_theta_vect(x, y, theta, R):
 
 @timem
 def calculate_mean_theta_torch(x, y, theta, R):
-    x = torch.from_numpy(x)
-    y = torch.from_numpy(y)
-    theta = torch.from_numpy(theta)
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    x = torch.from_numpy(x).to(device)
+    y = torch.from_numpy(y).to(device)
+    theta = torch.from_numpy(theta).to(device)
     N = len(x)
-    mean_theta = torch.zeros((N, 1))
+    mean_theta = torch.zeros((N, 1), device=device)
     diff_squared = (x.unsqueeze(1) - x) ** 2 + (y.unsqueeze(1) - y) ** 2
     neighbors = diff_squared < R**2
     # Compute summed cosine and sine values using advanced indexing
@@ -167,7 +196,10 @@ def calculate_mean_theta_torch(x, y, theta, R):
     # Compute mean_theta using arctan2
     mean_theta = torch.atan2(sy, sx)
 
-    return mean_theta
+    mean_theta_cpu = mean_theta.cpu()  # Move tensor to CPU
+    mean_theta_numpy = mean_theta_cpu.numpy()  # Convert tensor to NumPy array
+
+    return mean_theta_numpy
 
 @timem
 def calculate_mean_theta_cupy(x, y, theta, R):
@@ -187,12 +219,11 @@ def calculate_mean_theta_cupy(x, y, theta, R):
     # Compute mean_theta using arctan2
     mean_theta = cp.arctan2(sy, sx)
 
-    return mean_theta
+    return mean_theta.get()
 
 @timem
 def calculate_mean_theta_conc(
-    x: np.ndarray, y: np.ndarray, theta: np.ndarray, R: float
-) -> np.ndarray:
+    x: np.ndarray, y: np.ndarray, theta: np.ndarray, R: float) -> np.ndarray:
     N = len(x)
     mean_theta = np.zeros((N, 1))
 
@@ -216,45 +247,34 @@ def calcualte_mean_theta_cython(x, y, theta, R):
     mean_theta = np.zeros((N, 1))
     #print("before", mean_theta)
     flatten = mean_theta.flatten()
-    tester.calculate_mean_theta(x.flatten(), y.flatten(), theta.flatten(), N, R, flatten)
+    cython_mean_theta.calculate_mean_theta(x.flatten(), y.flatten(), theta.flatten(), N, R, flatten)
     # print("after", flatten)
     return flatten.reshape(x.shape)
-
-## Is right now the original code...
-def calc_loop_value(x,y,b,R,theta):
-        
-        neighbors = (x-x[b])**2+(y-y[b])**2 < R**2
-        sx = np.sum(np.cos(theta[neighbors]))
-        sy = np.sum(np.sin(theta[neighbors]))
-
-        # optimization 3?:
-        val = np.arctan2(sy, sx)
-
-        return val
 
 def main():
     N = 500
     Nt = 200
 
     # check if the necessary parameters are present
-    if len(sys.argv) > 2:
+    if len(sys.argv) == 1:
+        SIM = int(sys.argv[1])
+    if len(sys.argv) > 3:
         N = int(sys.argv[1])
         Nt = int(sys.argv[2])
-    #else:
-    #    print("No parameters provided.")
-
-    simulate_flocking(N, Nt)
+        SIM = int(sys.argv[3])
+    else:
+        print("No parameters provided.")
+        
+    print("Simulation used:", SIM)
+    simulate_flocking(N, Nt, simulation=SIM)
 
 # if this file is run by itself, run a basic simulation
 if __name__== "__main__":
-    '''
     test = "cuda" if torch.cuda.is_available() else "cpu"
     if test == "cpu":
         print("ABORT, CPU WAS SELECTED")
     else:
-        main()
-        print("Simulation Executed.")
-    '''
+        print("CUDA GPU found!")
 
     main()
     print("Simulation Executed.")
