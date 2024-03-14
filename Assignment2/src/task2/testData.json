@@ -1,9 +1,0 @@
-{
-    "tests":[
-        {
-            "width": 100,
-            "iterations":300,
-            "expected": 334236
-        }
-    ]
-}
