@@ -1,2 +1,2 @@
 # DD2358
-HPC course, assignments and project
+Project source code for the HPC Introduction course. Enter the project directory.
