@@ -1,0 +1,176 @@
+.TH "simulate.py" 3 "Version 1" "DD2358 HPC Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+simulate.py \- The main simulation file\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBsimulate\&.timem\fP (fn)"
+.br
+.ti -1c
+.RI "\fBsimulate\&.simulate_flocking\fP (N, Nt, simulation=0, seed=17, params={}, start_x=[], start_y=[], start_theta=[], change_factor=[])"
+.br
+.ti -1c
+.RI "\fBsimulate\&.calculate_mean_theta\fP (x, y, theta, R)"
+.br
+.ti -1c
+.RI "\fBsimulate\&.calc_loop_value\fP (x, y, b, R, theta)"
+.br
+.ti -1c
+.RI "\fBsimulate\&.calculate_mean_theta_vect\fP (x, y, theta, R)"
+.br
+.ti -1c
+.RI "\fBsimulate\&.calculate_mean_theta_torch\fP (x, y, theta, R)"
+.br
+.ti -1c
+.RI "\fBsimulate\&.calculate_mean_theta_cupy\fP (x, y, theta, R)"
+.br
+.ti -1c
+.RI "np\&.ndarray \fBsimulate\&.calculate_mean_theta_conc\fP (np\&.ndarray x, np\&.ndarray y, np\&.ndarray theta, float R)"
+.br
+.ti -1c
+.RI "\fBsimulate\&.calcualte_mean_theta_cython\fP (x, y, theta, R)"
+.br
+.ti -1c
+.RI "\fBsimulate\&.main\fP ()"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "str \fBsimulate\&.test\fP = 'cuda' if torch\&.cuda\&.is_available() else 'cpu'"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+The main simulation file\&. 
+
+
+.SH "Function Documentation"
+.PP 
+.SS "simulate\&.calc_loop_value ( x,  y,  b,  R,  theta)"
+
+.PP
+.nf
+Used for unit testing only
+.fi
+.PP
+ 
+.SS "simulate\&.calculate_mean_theta ( x,  y,  theta,  R)"
+
+.PP
+.nf
+Calculate the mean theta for each point in the given coordinates\&.
+
+Parameters:
+x (numpy\&.ndarray): Array of x-coordinates\&.
+y (numpy\&.ndarray): Array of y-coordinates\&.
+theta (numpy\&.ndarray): Array of theta values\&.
+R (float): Radius for neighbor selection\&.
+
+Returns:
+numpy\&.ndarray: Array of mean theta values for each point\&.
+
+.fi
+.PP
+ 
+.SS " np\&.ndarray simulate\&.calculate_mean_theta_conc (np\&.ndarray x, np\&.ndarray y, np\&.ndarray theta, float
+ R)"
+
+.PP
+.nf
+Calculate the mean theta concentration for each point in the given x, y coordinates\&.
+Use concurrent\&.futures to speed up the process\&.
+
+Args:
+    x (np\&.ndarray): Array of x-coordinates\&.
+    y (np\&.ndarray): Array of y-coordinates\&.
+    theta (np\&.ndarray): Array of theta values\&.
+    R (float): Radius for determining neighbors\&.
+
+Returns:
+    np\&.ndarray: Array of mean theta concentrations for each point\&.
+
+.fi
+.PP
+ 
+.SS "simulate\&.calculate_mean_theta_cupy ( x,  y,  theta,  R)"
+
+.PP
+.nf
+Calculate the mean theta using Cupy\&.
+GPU acceleration is required for running\&.
+
+Args:
+    x (array-like): The x-coordinates\&.
+    y (array-like): The y-coordinates\&.
+    theta (array-like): The theta values\&.
+    R (float): The radius\&.
+
+Returns:
+    array-like: The mean theta values\&.
+.fi
+.PP
+ 
+.SS "simulate\&.calculate_mean_theta_torch ( x,  y,  theta,  R)"
+
+.PP
+.nf
+Calculate the mean theta using the given x, y, theta, and R values\&.
+It uses PyTorch to speed up the process\&. Requires GPU for significant speedup\&.
+
+Args:
+    x (numpy\&.ndarray): Array of x-coordinates\&.
+    y (numpy\&.ndarray): Array of y-coordinates\&.
+    theta (numpy\&.ndarray): Array of theta values\&.
+    R (float): Radius value\&.
+
+Returns:
+    numpy\&.ndarray: Array of mean theta values\&.
+.fi
+.PP
+ 
+.SS "simulate\&.calculate_mean_theta_vect ( x,  y,  theta,  R)"
+
+.PP
+.nf
+Calculate the mean theta values for each point in the given coordinates\&.
+It uses vectorization to speed up the process\&.
+
+Parameters:
+x (numpy\&.ndarray): Array of x-coordinates\&.
+y (numpy\&.ndarray): Array of y-coordinates\&.
+theta (numpy\&.ndarray): Array of theta values\&.
+R (float): Radius for determining neighbors\&.
+
+Returns:
+numpy\&.ndarray: Array of mean theta values for each point\&.
+
+.fi
+.PP
+ 
+.SS "simulate\&.simulate_flocking ( N,  Nt,  simulation = \fR0\fP,  seed = \fR17\fP,  params = \fR{}\fP,  start_x = \fR[]\fP,  start_y = \fR[]\fP,  start_theta = \fR[]\fP,  change_factor = \fR[]\fP)"
+
+.PP
+.nf
+Finite Volume simulation\&.
+
+Args:
+    N (int): Number of birds simulated
+    Nt (int): Simulation length, number of time steps
+    Seed (int): Seed for the random numbers
+    Params (dict): Optional dictionary containing specifications of parameters, like starting velocity, fluctuation etc
+
+.fi
+.PP
+ 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for DD2358 HPC Project from the source code\&.

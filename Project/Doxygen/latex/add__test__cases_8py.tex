@@ -1,0 +1,94 @@
+\doxysection{add\+\_\+test\+\_\+cases.\+py File Reference}
+\hypertarget{add__test__cases_8py}{}\label{add__test__cases_8py}\index{add\_test\_cases.py@{add\_test\_cases.py}}
+
+
+File that adds code for adding and removing test cases.  
+
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classadd__test__cases_1_1_numpy_array_encoder}{add\+\_\+test\+\_\+cases.\+Numpy\+Array\+Encoder}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+None \mbox{\hyperlink{add__test__cases_8py_a791c28296984cb936769cabfe18ef004}{add\+\_\+test\+\_\+cases.\+remove\+\_\+test}} (test\+\_\+name)
+\item 
+None \mbox{\hyperlink{add__test__cases_8py_a4e5dfc6e32962047069b3c2ca54e74df}{add\+\_\+test\+\_\+cases.\+add\+\_\+test}} (test\+\_\+name, N=500, nt=200, seed=17, params=\{\})
+\item 
+None \mbox{\hyperlink{add__test__cases_8py_ac2063efab59394ef6e29410779a3a0b1}{add\+\_\+test\+\_\+cases.\+add\+\_\+test\+\_\+loop\+\_\+singular}} (test\+\_\+name, N=500, L=10, R=1)
+\item 
+None \mbox{\hyperlink{add__test__cases_8py_ad3661ebc0b480c21f980275f93030606}{add\+\_\+test\+\_\+cases.\+add\+\_\+test\+\_\+loop}} (test\+\_\+name, N=500, L=10, R=1)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{add__test__cases_8py_a515711492ae3cb720398d27ce96c5ad8}\label{add__test__cases_8py_a515711492ae3cb720398d27ce96c5ad8} 
+str {\bfseries add\+\_\+test\+\_\+cases.\+name} = "{}simple\+\_\+test"{} + str(i\texorpdfstring{$\ast$}{*}10)
+\item 
+\Hypertarget{add__test__cases_8py_a26af3be278945470a41af2f9f173872b}\label{add__test__cases_8py_a26af3be278945470a41af2f9f173872b} 
+{\bfseries add\+\_\+test\+\_\+cases.\+params}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+File that adds code for adding and removing test cases. 
+
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{add__test__cases_8py_a4e5dfc6e32962047069b3c2ca54e74df}\label{add__test__cases_8py_a4e5dfc6e32962047069b3c2ca54e74df} 
+\index{add\_test\_cases.py@{add\_test\_cases.py}!add\_test@{add\_test}}
+\index{add\_test@{add\_test}!add\_test\_cases.py@{add\_test\_cases.py}}
+\doxysubsubsection{\texorpdfstring{add\_test()}{add\_test()}}
+{\footnotesize\ttfamily  None add\+\_\+test\+\_\+cases.\+add\+\_\+test (\begin{DoxyParamCaption}\item[{}]{test\+\_\+name,  }\item[{}]{N = {\ttfamily 500},  }\item[{}]{nt = {\ttfamily 200},  }\item[{}]{seed = {\ttfamily 17},  }\item[{}]{params = {\ttfamily \{\}} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Function that adds a test case to the test_data.json file
+
+Args:
+    test_name (String): Name of the new test
+    N (int): Number of birds simulated
+    Nt (int): Simulation length, number of time steps
+    Seed(int): Seed for the randomness in the simulation
+    Params (dict): Optional dictionary containing specifications of parameters, like starting velocity, fluctuation etc
+\end{DoxyVerb}
+ \Hypertarget{add__test__cases_8py_ad3661ebc0b480c21f980275f93030606}\label{add__test__cases_8py_ad3661ebc0b480c21f980275f93030606} 
+\index{add\_test\_cases.py@{add\_test\_cases.py}!add\_test\_loop@{add\_test\_loop}}
+\index{add\_test\_loop@{add\_test\_loop}!add\_test\_cases.py@{add\_test\_cases.py}}
+\doxysubsubsection{\texorpdfstring{add\_test\_loop()}{add\_test\_loop()}}
+{\footnotesize\ttfamily  None add\+\_\+test\+\_\+cases.\+add\+\_\+test\+\_\+loop (\begin{DoxyParamCaption}\item[{}]{test\+\_\+name,  }\item[{}]{N = {\ttfamily 500},  }\item[{}]{L = {\ttfamily 10},  }\item[{}]{R = {\ttfamily 1} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Function that adds a test case to the test_data.json file
+
+Args:
+    test_name (String): Name of the new test
+    N (int): Number of birds simulated
+\end{DoxyVerb}
+ \Hypertarget{add__test__cases_8py_ac2063efab59394ef6e29410779a3a0b1}\label{add__test__cases_8py_ac2063efab59394ef6e29410779a3a0b1} 
+\index{add\_test\_cases.py@{add\_test\_cases.py}!add\_test\_loop\_singular@{add\_test\_loop\_singular}}
+\index{add\_test\_loop\_singular@{add\_test\_loop\_singular}!add\_test\_cases.py@{add\_test\_cases.py}}
+\doxysubsubsection{\texorpdfstring{add\_test\_loop\_singular()}{add\_test\_loop\_singular()}}
+{\footnotesize\ttfamily  None add\+\_\+test\+\_\+cases.\+add\+\_\+test\+\_\+loop\+\_\+singular (\begin{DoxyParamCaption}\item[{}]{test\+\_\+name,  }\item[{}]{N = {\ttfamily 500},  }\item[{}]{L = {\ttfamily 10},  }\item[{}]{R = {\ttfamily 1} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Function that adds a test case to the test_data.json file
+
+Args:
+    test_name (String): Name of the new test
+    N (int): Number of birds simulated
+    Nt (int): Simulation length, number of time steps
+    Seed(int): Seed for the randomness in the simulation
+    Params (dict): Optional dictionary containing specifications of parameters, like starting velocity, fluctuation etc
+\end{DoxyVerb}
+ \Hypertarget{add__test__cases_8py_a791c28296984cb936769cabfe18ef004}\label{add__test__cases_8py_a791c28296984cb936769cabfe18ef004} 
+\index{add\_test\_cases.py@{add\_test\_cases.py}!remove\_test@{remove\_test}}
+\index{remove\_test@{remove\_test}!add\_test\_cases.py@{add\_test\_cases.py}}
+\doxysubsubsection{\texorpdfstring{remove\_test()}{remove\_test()}}
+{\footnotesize\ttfamily  None add\+\_\+test\+\_\+cases.\+remove\+\_\+test (\begin{DoxyParamCaption}\item[{}]{test\+\_\+name }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Function that removes a given test case from the test_data.json file
+
+Args:
+    test_name (String): Name of the test to be removed
+\end{DoxyVerb}
+ 

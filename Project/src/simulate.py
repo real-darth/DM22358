@@ -1,3 +1,8 @@
+##
+# @file
+# The main simulation file
+#
+
 from concurrent.futures import ThreadPoolExecutor
 import sys
 import matplotlib.pyplot as plt
@@ -38,6 +43,8 @@ def timem(fn):
 
 
 # @profile
+
+
 def simulate_flocking(
     N,
     Nt,

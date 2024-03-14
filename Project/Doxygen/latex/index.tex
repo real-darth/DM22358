@@ -1,0 +1,73 @@
+\chapter{Project}
+\hypertarget{index}{}\label{index}\index{Project@{Project}}
+\label{index_md__r_e_a_d_m_e}%
+\Hypertarget{index_md__r_e_a_d_m_e}%
+ \hypertarget{index_autotoc_md1}{}\doxysection{\texorpdfstring{Documentation}{Documentation}}\label{index_autotoc_md1}
+For in depth documentation please refer to the "{}\+Files"{} tab, or the report.\hypertarget{index_autotoc_md2}{}\doxysection{\texorpdfstring{Installation}{Installation}}\label{index_autotoc_md2}
+\hypertarget{index_autotoc_md3}{}\doxysubsection{\texorpdfstring{Linux/\+Mac\+OX}{Linux/\+Mac\+OX}}\label{index_autotoc_md3}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{python3.9\ -\/m\ venv\ venv\ \ }
+\DoxyCodeLine{source\ venv/bin/activate}
+
+\end{DoxyCode}
+\hypertarget{index_autotoc_md4}{}\doxysubsection{\texorpdfstring{Windows}{Windows}}\label{index_autotoc_md4}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{python\ -\/m\ venv\ venv\ \ }
+\DoxyCodeLine{source\ venv/scripts/activate}
+
+\end{DoxyCode}
+
+
+For installing dependecies do\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{pip\ install\ .}
+
+\end{DoxyCode}
+
+
+And for developmnet dependencies (needed to run tests) do\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{pip\ install\ "{}.[dev]"{}}
+
+\end{DoxyCode}
+\hypertarget{index_autotoc_md5}{}\doxysubsection{\texorpdfstring{Install Cu\+Py}{Install Cu\+Py}}\label{index_autotoc_md5}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{pip\ install\ torch\ -\/-\/index-\/url\ https://download.pytorch.org/whl/cu121}
+
+\end{DoxyCode}
+\hypertarget{index_autotoc_md6}{}\doxysubsection{\texorpdfstring{To build Cython}{To build Cython}}\label{index_autotoc_md6}
+Check Cython is installed 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cython\ -\/-\/version}
+
+\end{DoxyCode}
+ Then run 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{python\ setup.py\ build\_ext\ -\/-\/inplace}
+
+\end{DoxyCode}
+\hypertarget{index_autotoc_md7}{}\doxysection{\texorpdfstring{Test}{Test}}\label{index_autotoc_md7}
+To run the unit-\/tests, execute the following command 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{python\ -\/m\ pytest}
+
+\end{DoxyCode}
+ or 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{pytest\ simulate\_flocking\_test.py}
+
+\end{DoxyCode}
+
+
+Moreover, you are encouraged to install the pre-\/commit hooks, so that black and the flake8 run before every commit\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{pre-\/commit\ install}
+
+\end{DoxyCode}
+\hypertarget{index_autotoc_md8}{}\doxysection{\texorpdfstring{Useful vs-\/code configuration}{Useful vs-\/code configuration}}\label{index_autotoc_md8}
+Install the extensions {\ttfamily ms-\/python.\+black-\/formatter}, {\ttfamily ms-\/python.\+python} and {\ttfamily ms-\/python.\+vscode-\/pylance} 

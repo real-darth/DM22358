@@ -1,3 +1,8 @@
+##
+# @file
+# File containing code for running the line profilier
+#
+
 import sys
 import os
 # set temporary path so we can find modules in parent directory

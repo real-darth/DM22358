@@ -1,5 +1,9 @@
 # Project
 
+## Documentation
+
+For in depth documentation please refer to the doxygen in the 'Doxygen' folder, or the report.
+
 ## Installation
 ### Linux/MacOX
 ```bash

@@ -1,3 +1,8 @@
+##
+# @file
+# File containing code for running the benchmarks.
+# Utilizes line_profile.py, cprofile.py and memory_profile.py
+#   
 import argparse
 import subprocess
 import sys

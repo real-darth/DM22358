@@ -1,3 +1,8 @@
+##
+# @file
+# Cython improvements
+#
+
 cimport numpy as cnp
 from libc.math cimport cos, sin, atan2
 cimport cython

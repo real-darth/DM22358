@@ -1,0 +1,109 @@
+.TH "add_test_cases.py" 3 "Version 1" "DD2358 HPC Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+add_test_cases.py \- File that adds code for adding and removing test cases\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Classes"
+
+.in +1c
+.ti -1c
+.RI "class \fBadd_test_cases\&.NumpyArrayEncoder\fP"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "None \fBadd_test_cases\&.remove_test\fP (test_name)"
+.br
+.ti -1c
+.RI "None \fBadd_test_cases\&.add_test\fP (test_name, N=500, nt=200, seed=17, params={})"
+.br
+.ti -1c
+.RI "None \fBadd_test_cases\&.add_test_loop_singular\fP (test_name, N=500, L=10, R=1)"
+.br
+.ti -1c
+.RI "None \fBadd_test_cases\&.add_test_loop\fP (test_name, N=500, L=10, R=1)"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "str \fBadd_test_cases\&.name\fP = 'simple_test' + str(i*10)"
+.br
+.ti -1c
+.RI "\fBadd_test_cases\&.params\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+File that adds code for adding and removing test cases\&. 
+
+
+.SH "Function Documentation"
+.PP 
+.SS " None add_test_cases\&.add_test ( test_name,  N = \fR500\fP,  nt = \fR200\fP,  seed = \fR17\fP,  params = \fR{}\fP)"
+
+.PP
+.nf
+Function that adds a test case to the test_data\&.json file
+
+Args:
+    test_name (String): Name of the new test
+    N (int): Number of birds simulated
+    Nt (int): Simulation length, number of time steps
+    Seed(int): Seed for the randomness in the simulation
+    Params (dict): Optional dictionary containing specifications of parameters, like starting velocity, fluctuation etc
+
+.fi
+.PP
+ 
+.SS " None add_test_cases\&.add_test_loop ( test_name,  N = \fR500\fP,  L = \fR10\fP,  R = \fR1\fP)"
+
+.PP
+.nf
+Function that adds a test case to the test_data\&.json file
+
+Args:
+    test_name (String): Name of the new test
+    N (int): Number of birds simulated
+
+.fi
+.PP
+ 
+.SS " None add_test_cases\&.add_test_loop_singular ( test_name,  N = \fR500\fP,  L = \fR10\fP,  R = \fR1\fP)"
+
+.PP
+.nf
+Function that adds a test case to the test_data\&.json file
+
+Args:
+    test_name (String): Name of the new test
+    N (int): Number of birds simulated
+    Nt (int): Simulation length, number of time steps
+    Seed(int): Seed for the randomness in the simulation
+    Params (dict): Optional dictionary containing specifications of parameters, like starting velocity, fluctuation etc
+
+.fi
+.PP
+ 
+.SS " None add_test_cases\&.remove_test ( test_name)"
+
+.PP
+.nf
+Function that removes a given test case from the test_data\&.json file
+
+Args:
+    test_name (String): Name of the test to be removed
+
+.fi
+.PP
+ 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for DD2358 HPC Project from the source code\&.

@@ -1,0 +1,156 @@
+\doxysection{simulate.\+py File Reference}
+\hypertarget{simulate_8py}{}\label{simulate_8py}\index{simulate.py@{simulate.py}}
+
+
+The main simulation file.  
+
+
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{simulate_8py_a5b5f482c83060245c78d44c07240a98c}\label{simulate_8py_a5b5f482c83060245c78d44c07240a98c} 
+{\bfseries simulate.\+timem} (fn)
+\item 
+\mbox{\hyperlink{simulate_8py_a1d1e46661dbd12fa7582d88f60ecc84d}{simulate.\+simulate\+\_\+flocking}} (N, Nt, simulation=0, seed=17, params=\{\}, start\+\_\+x=\mbox{[}$\,$\mbox{]}, start\+\_\+y=\mbox{[}$\,$\mbox{]}, start\+\_\+theta=\mbox{[}$\,$\mbox{]}, change\+\_\+factor=\mbox{[}$\,$\mbox{]})
+\item 
+\mbox{\hyperlink{simulate_8py_a23396f3b30f49bc3f1816637837ae1f4}{simulate.\+calculate\+\_\+mean\+\_\+theta}} (x, y, theta, R)
+\item 
+\mbox{\hyperlink{simulate_8py_ae659b2aea5adff7781727c53b0dfab5e}{simulate.\+calc\+\_\+loop\+\_\+value}} (x, y, b, R, theta)
+\item 
+\mbox{\hyperlink{simulate_8py_a75b89e807b674f834d1cac3a508e5a2d}{simulate.\+calculate\+\_\+mean\+\_\+theta\+\_\+vect}} (x, y, theta, R)
+\item 
+\mbox{\hyperlink{simulate_8py_a6edc2fd3e2cae6b7d8937f51bbcc7ba8}{simulate.\+calculate\+\_\+mean\+\_\+theta\+\_\+torch}} (x, y, theta, R)
+\item 
+\mbox{\hyperlink{simulate_8py_ae65513a4a4909ddac8f2552297a0b067}{simulate.\+calculate\+\_\+mean\+\_\+theta\+\_\+cupy}} (x, y, theta, R)
+\item 
+np.\+ndarray \mbox{\hyperlink{simulate_8py_a68a3d8d471de987f89b7f72e391b6d90}{simulate.\+calculate\+\_\+mean\+\_\+theta\+\_\+conc}} (np.\+ndarray x, np.\+ndarray y, np.\+ndarray theta, float R)
+\item 
+\Hypertarget{simulate_8py_a7402e8d21b52c4194b84d6a2fd73d130}\label{simulate_8py_a7402e8d21b52c4194b84d6a2fd73d130} 
+{\bfseries simulate.\+calcualte\+\_\+mean\+\_\+theta\+\_\+cython} (x, y, theta, R)
+\item 
+\Hypertarget{simulate_8py_ae75cd01565362d836890c196837a49a7}\label{simulate_8py_ae75cd01565362d836890c196837a49a7} 
+{\bfseries simulate.\+main} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{simulate_8py_ab6a7281f10c9ad87af834e3756dc17b6}\label{simulate_8py_ab6a7281f10c9ad87af834e3756dc17b6} 
+str {\bfseries simulate.\+test} = "{}cuda"{} if torch.\+cuda.\+is\+\_\+available() else "{}cpu"{}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The main simulation file. 
+
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{simulate_8py_ae659b2aea5adff7781727c53b0dfab5e}\label{simulate_8py_ae659b2aea5adff7781727c53b0dfab5e} 
+\index{simulate.py@{simulate.py}!calc\_loop\_value@{calc\_loop\_value}}
+\index{calc\_loop\_value@{calc\_loop\_value}!simulate.py@{simulate.py}}
+\doxysubsubsection{\texorpdfstring{calc\_loop\_value()}{calc\_loop\_value()}}
+{\footnotesize\ttfamily simulate.\+calc\+\_\+loop\+\_\+value (\begin{DoxyParamCaption}\item[{}]{x,  }\item[{}]{y,  }\item[{}]{b,  }\item[{}]{R,  }\item[{}]{theta }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Used for unit testing only\end{DoxyVerb}
+ \Hypertarget{simulate_8py_a23396f3b30f49bc3f1816637837ae1f4}\label{simulate_8py_a23396f3b30f49bc3f1816637837ae1f4} 
+\index{simulate.py@{simulate.py}!calculate\_mean\_theta@{calculate\_mean\_theta}}
+\index{calculate\_mean\_theta@{calculate\_mean\_theta}!simulate.py@{simulate.py}}
+\doxysubsubsection{\texorpdfstring{calculate\_mean\_theta()}{calculate\_mean\_theta()}}
+{\footnotesize\ttfamily simulate.\+calculate\+\_\+mean\+\_\+theta (\begin{DoxyParamCaption}\item[{}]{x,  }\item[{}]{y,  }\item[{}]{theta,  }\item[{}]{R }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Calculate the mean theta for each point in the given coordinates.
+
+Parameters:
+x (numpy.ndarray): Array of x-coordinates.
+y (numpy.ndarray): Array of y-coordinates.
+theta (numpy.ndarray): Array of theta values.
+R (float): Radius for neighbor selection.
+
+Returns:
+numpy.ndarray: Array of mean theta values for each point.
+\end{DoxyVerb}
+ \Hypertarget{simulate_8py_a68a3d8d471de987f89b7f72e391b6d90}\label{simulate_8py_a68a3d8d471de987f89b7f72e391b6d90} 
+\index{simulate.py@{simulate.py}!calculate\_mean\_theta\_conc@{calculate\_mean\_theta\_conc}}
+\index{calculate\_mean\_theta\_conc@{calculate\_mean\_theta\_conc}!simulate.py@{simulate.py}}
+\doxysubsubsection{\texorpdfstring{calculate\_mean\_theta\_conc()}{calculate\_mean\_theta\_conc()}}
+{\footnotesize\ttfamily  np.\+ndarray simulate.\+calculate\+\_\+mean\+\_\+theta\+\_\+conc (\begin{DoxyParamCaption}\item[{np.\+ndarray}]{x,  }\item[{np.\+ndarray}]{y,  }\item[{np.\+ndarray}]{theta,  }\item[{float }]{R }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Calculate the mean theta concentration for each point in the given x, y coordinates.
+Use concurrent.futures to speed up the process.
+
+Args:
+    x (np.ndarray): Array of x-coordinates.
+    y (np.ndarray): Array of y-coordinates.
+    theta (np.ndarray): Array of theta values.
+    R (float): Radius for determining neighbors.
+
+Returns:
+    np.ndarray: Array of mean theta concentrations for each point.
+\end{DoxyVerb}
+ \Hypertarget{simulate_8py_ae65513a4a4909ddac8f2552297a0b067}\label{simulate_8py_ae65513a4a4909ddac8f2552297a0b067} 
+\index{simulate.py@{simulate.py}!calculate\_mean\_theta\_cupy@{calculate\_mean\_theta\_cupy}}
+\index{calculate\_mean\_theta\_cupy@{calculate\_mean\_theta\_cupy}!simulate.py@{simulate.py}}
+\doxysubsubsection{\texorpdfstring{calculate\_mean\_theta\_cupy()}{calculate\_mean\_theta\_cupy()}}
+{\footnotesize\ttfamily simulate.\+calculate\+\_\+mean\+\_\+theta\+\_\+cupy (\begin{DoxyParamCaption}\item[{}]{x,  }\item[{}]{y,  }\item[{}]{theta,  }\item[{}]{R }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Calculate the mean theta using Cupy.
+GPU acceleration is required for running.
+
+Args:
+    x (array-like): The x-coordinates.
+    y (array-like): The y-coordinates.
+    theta (array-like): The theta values.
+    R (float): The radius.
+
+Returns:
+    array-like: The mean theta values.\end{DoxyVerb}
+ \Hypertarget{simulate_8py_a6edc2fd3e2cae6b7d8937f51bbcc7ba8}\label{simulate_8py_a6edc2fd3e2cae6b7d8937f51bbcc7ba8} 
+\index{simulate.py@{simulate.py}!calculate\_mean\_theta\_torch@{calculate\_mean\_theta\_torch}}
+\index{calculate\_mean\_theta\_torch@{calculate\_mean\_theta\_torch}!simulate.py@{simulate.py}}
+\doxysubsubsection{\texorpdfstring{calculate\_mean\_theta\_torch()}{calculate\_mean\_theta\_torch()}}
+{\footnotesize\ttfamily simulate.\+calculate\+\_\+mean\+\_\+theta\+\_\+torch (\begin{DoxyParamCaption}\item[{}]{x,  }\item[{}]{y,  }\item[{}]{theta,  }\item[{}]{R }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Calculate the mean theta using the given x, y, theta, and R values.
+It uses PyTorch to speed up the process. Requires GPU for significant speedup.
+
+Args:
+    x (numpy.ndarray): Array of x-coordinates.
+    y (numpy.ndarray): Array of y-coordinates.
+    theta (numpy.ndarray): Array of theta values.
+    R (float): Radius value.
+
+Returns:
+    numpy.ndarray: Array of mean theta values.\end{DoxyVerb}
+ \Hypertarget{simulate_8py_a75b89e807b674f834d1cac3a508e5a2d}\label{simulate_8py_a75b89e807b674f834d1cac3a508e5a2d} 
+\index{simulate.py@{simulate.py}!calculate\_mean\_theta\_vect@{calculate\_mean\_theta\_vect}}
+\index{calculate\_mean\_theta\_vect@{calculate\_mean\_theta\_vect}!simulate.py@{simulate.py}}
+\doxysubsubsection{\texorpdfstring{calculate\_mean\_theta\_vect()}{calculate\_mean\_theta\_vect()}}
+{\footnotesize\ttfamily simulate.\+calculate\+\_\+mean\+\_\+theta\+\_\+vect (\begin{DoxyParamCaption}\item[{}]{x,  }\item[{}]{y,  }\item[{}]{theta,  }\item[{}]{R }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Calculate the mean theta values for each point in the given coordinates.
+It uses vectorization to speed up the process.
+
+Parameters:
+x (numpy.ndarray): Array of x-coordinates.
+y (numpy.ndarray): Array of y-coordinates.
+theta (numpy.ndarray): Array of theta values.
+R (float): Radius for determining neighbors.
+
+Returns:
+numpy.ndarray: Array of mean theta values for each point.
+\end{DoxyVerb}
+ \Hypertarget{simulate_8py_a1d1e46661dbd12fa7582d88f60ecc84d}\label{simulate_8py_a1d1e46661dbd12fa7582d88f60ecc84d} 
+\index{simulate.py@{simulate.py}!simulate\_flocking@{simulate\_flocking}}
+\index{simulate\_flocking@{simulate\_flocking}!simulate.py@{simulate.py}}
+\doxysubsubsection{\texorpdfstring{simulate\_flocking()}{simulate\_flocking()}}
+{\footnotesize\ttfamily simulate.\+simulate\+\_\+flocking (\begin{DoxyParamCaption}\item[{}]{N,  }\item[{}]{Nt,  }\item[{}]{simulation = {\ttfamily 0},  }\item[{}]{seed = {\ttfamily 17},  }\item[{}]{params = {\ttfamily \{\}},  }\item[{}]{start\+\_\+x = {\ttfamily \mbox{[}\mbox{]}},  }\item[{}]{start\+\_\+y = {\ttfamily \mbox{[}\mbox{]}},  }\item[{}]{start\+\_\+theta = {\ttfamily \mbox{[}\mbox{]}},  }\item[{}]{change\+\_\+factor = {\ttfamily \mbox{[}\mbox{]}} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Finite Volume simulation.
+
+Args:
+    N (int): Number of birds simulated
+    Nt (int): Simulation length, number of time steps
+    Seed (int): Seed for the random numbers
+    Params (dict): Optional dictionary containing specifications of parameters, like starting velocity, fluctuation etc
+\end{DoxyVerb}
+ 

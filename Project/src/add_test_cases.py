@@ -1,3 +1,8 @@
+##
+# @file
+# File that adds code for adding and removing test cases.
+#
+
 from json import JSONEncoder
 import json
 import numpy as np
