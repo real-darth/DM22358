@@ -15,6 +15,7 @@ Script based on code made originaly by
 Philip Mocz (2021) Princeton Univeristy, @PMocz
 """
 
+
 def timem(fn):
     from timeit import default_timer as ittimer
 
@@ -26,144 +27,181 @@ def timem(fn):
             result = fn(*args, **kwargs)
             t2 = ittimer()
             resultArray = np.append(resultArray, [t2 - t1])
-            #print(f"@timefn: {fn.__name__} took {t2 - t1} seconds")
+            # print(f"@timefn: {fn.__name__} took {t2 - t1} seconds")
         avg = np.average(resultArray)
-        #print(f"Average: {avg}")
+        # print(f"Average: {avg}")
         std = np.std(resultArray)
-        #print(f"Standard deviation: {std}")
-        return  result,avg, std
+        # print(f"Standard deviation: {std}")
+        return result, avg, std
 
     return measure_time
 
 
-#@profile
-def simulate_flocking(N, Nt, simulation=0, seed=17, params = {}, start_x = [], start_y = [], start_theta = [], change_factor = []):
+# @profile
+def simulate_flocking(
+    N,
+    Nt,
+    simulation=0,
+    seed=17,
+    params={},
+    start_x=[],
+    start_y=[],
+    start_theta=[],
+    change_factor=[],
+):
     """Finite Volume simulation.
-    
+
     Args:
         N (int): Number of birds simulated
         Nt (int): Simulation length, number of time steps
         Seed (int): Seed for the random numbers
         Params (dict): Optional dictionary containing specifications of parameters, like starting velocity, fluctuation etc
     """
-    
+
     # Simulation parameters
-    v0           = params.get('v0', 1.0)     # velocity
-    eta          = params.get('eta', 0.5)    # random fluctuation in angle (in radians)
-    L            = params.get('L', 10)       # size of box
-    R            = params.get('R', 1)        # interaction radius
-    dt           = params.get('dt', 0.2)     # time step
-    plotRealTime = params.get('plotRealTime', False) # Flag for updating the graph in real-time
-    
+    v0 = params.get("v0", 1.0)  # velocity
+    eta = params.get("eta", 0.5)  # random fluctuation in angle (in radians)
+    L = params.get("L", 10)  # size of box
+    R = params.get("R", 1)  # interaction radius
+    dt = params.get("dt", 0.2)  # time step
+    plotRealTime = params.get("plotRealTime", False)  # Flag for updating the graph in real-time
+
     # Initialize
-    np.random.seed(seed)      # set the random number generator seed
-    
+    np.random.seed(seed)  # set the random number generator seed
+
     # bird positions
     if len(start_x) == 0:
-        start_x = np.random.rand(N,1)*L
-        start_y = np.random.rand(N,1)*L
+        start_x = np.random.rand(N, 1) * L
+        start_y = np.random.rand(N, 1) * L
 
     x = np.copy(start_x)
     y = np.copy(start_y)
-    
+
     # bird velocities
     if len(start_theta) == 0:
-        start_theta = 2 * np.pi * np.random.rand(N,1)
+        start_theta = 2 * np.pi * np.random.rand(N, 1)
 
     theta = np.copy(start_theta)
     vx = v0 * np.cos(theta)
     vy = v0 * np.sin(theta)
-    
+
     use_rand_change = False
     if len(change_factor) == 0:
         use_rand_change = True
 
     # Prep figure
     if plotRealTime:
-        fig = plt.figure(figsize=(4,4), dpi=80)
+        fig = plt.figure(figsize=(4, 4), dpi=80)
         ax = plt.gca()
-    
+
     # Simulation Main Loop
-    #neighbors = np.ones(np.shape(x), dtype=bool)
+    # neighbors = np.ones(np.shape(x), dtype=bool)
     for i in range(Nt):
 
         # move
-        x += vx*dt
-        y += vy*dt
-        
+        x += vx * dt
+        y += vy * dt
+
         # apply periodic BCs
         x = x % L
         y = y % L
-        
+
         # find mean angle of neighbors within R
         # IF WE HAVE TIME WRAPPER, WE NEED TO REMOVE THE TIMES AS WELL
-        #mean_theta, _, _ = calculate_mean_theta(x,y,theta,R)
-        #mean_theta, _, _ = calcualte_mean_theta_cython(x,y,theta,R)
+        # mean_theta, _, _ = calculate_mean_theta(x,y,theta,R)
+        # mean_theta, _, _ = calcualte_mean_theta_cython(x,y,theta,R)
 
         # select the correct simulation type
-        if (simulation == 0):
-            mean_theta, _, _ = calculate_mean_theta(x,y,theta,R)
-        elif (simulation == 1):
-            mean_theta, _, _ = calculate_mean_theta_vect(x,y,theta,R)
-        elif (simulation == 2):
-            mean_theta, _, _ = calculate_mean_theta_torch(x,y,theta,R)
-        elif (simulation == 3):
-            mean_theta, _, _ = calcualte_mean_theta_cython(x,y,theta,R)
-        elif (simulation == 4):
-            mean_theta, _, _ = calculate_mean_theta_conc(x,y,theta,R)
-        elif (simulation == 5):
-            mean_theta, _, _ = calculate_mean_theta_cupy(x,y,theta,R)
+        if simulation == 0:
+            mean_theta, _, _ = calculate_mean_theta(x, y, theta, R)
+        elif simulation == 1:
+            mean_theta, _, _ = calculate_mean_theta_vect(x, y, theta, R)
+        elif simulation == 2:
+            mean_theta, _, _ = calculate_mean_theta_torch(x, y, theta, R)
+        elif simulation == 3:
+            mean_theta, _, _ = calcualte_mean_theta_cython(x, y, theta, R)
+        elif simulation == 4:
+            mean_theta, _, _ = calculate_mean_theta_conc(x, y, theta, R)
+        elif simulation == 5:
+            mean_theta, _, _ = calculate_mean_theta_cupy(x, y, theta, R)
         else:
             print("[ERROR] mean theta not defined, some parameter is missing...")
 
         # add random perturbations
         if use_rand_change:
-            theta = mean_theta + eta*(np.random.rand(N,1)-0.5)
-        else: 
-            theta = mean_theta + eta*(change_factor-0.5)
+            theta = mean_theta + eta * (np.random.rand(N, 1) - 0.5)
+        else:
+            theta = mean_theta + eta * (change_factor - 0.5)
 
         # update velocities
         vx = v0 * np.cos(theta)
         vy = v0 * np.sin(theta)
         # plot in real time
-        if plotRealTime: # or (i == Nt-1):
+        if plotRealTime:  # or (i == Nt-1):
             plt.cla()
-            plt.quiver(x,y,vx,vy)
+            plt.quiver(x, y, vx, vy)
             ax.set(xlim=(0, L), ylim=(0, L))
-            ax.set_aspect('equal')    
+            ax.set_aspect("equal")
             ax.get_xaxis().set_visible(False)
             ax.get_yaxis().set_visible(False)
             plt.pause(0.001)
-                
+
     # Save figure
     if plotRealTime:
-        plt.savefig('simulation_plots/activematter.png',dpi=240)
+        plt.savefig("simulation_plots/activematter.png", dpi=240)
         plt.show()
     return x, y, start_x, start_y, start_theta
 
+
 @timem
 def calculate_mean_theta(x, y, theta, R):
+    """
+    Calculate the mean theta for each point in the given coordinates.
+
+    Parameters:
+    x (numpy.ndarray): Array of x-coordinates.
+    y (numpy.ndarray): Array of y-coordinates.
+    theta (numpy.ndarray): Array of theta values.
+    R (float): Radius for neighbor selection.
+
+    Returns:
+    numpy.ndarray: Array of mean theta values for each point.
+    """
     N = len(x)
     mean_theta = np.zeros((N, 1))
     for b in range(N):
-        neighbors = (x-x[b])**2+(y-y[b])**2 < R**2
+        neighbors = (x - x[b]) ** 2 + (y - y[b]) ** 2 < R**2
         sx = np.sum(np.cos(theta[neighbors]))
         sy = np.sum(np.sin(theta[neighbors]))
         val = np.arctan2(sy, sx)
         mean_theta[b] = val
     return mean_theta
 
+
 def calc_loop_value(x, y, b, R, theta):
-    '''Used for unit testing only
-    '''
-    neighbors = (x-x[b])**2+(y-y[b])**2 < R**2
+    """Used for unit testing only"""
+    neighbors = (x - x[b]) ** 2 + (y - y[b]) ** 2 < R**2
     sx = np.sum(np.cos(theta[neighbors]))
     sy = np.sum(np.sin(theta[neighbors]))
     val = np.arctan2(sy, sx)
     return val
 
+
 @timem
 def calculate_mean_theta_vect(x, y, theta, R):
+    """
+    Calculate the mean theta values for each point in the given coordinates.
+    It uses vectorization to speed up the process.
+
+    Parameters:
+    x (numpy.ndarray): Array of x-coordinates.
+    y (numpy.ndarray): Array of y-coordinates.
+    theta (numpy.ndarray): Array of theta values.
+    R (float): Radius for determining neighbors.
+
+    Returns:
+    numpy.ndarray: Array of mean theta values for each point.
+    """
     N = len(x)
     mean_theta = np.zeros((N, 1))
 
@@ -180,8 +218,23 @@ def calculate_mean_theta_vect(x, y, theta, R):
 
     return mean_theta
 
+
 @timem
 def calculate_mean_theta_torch(x, y, theta, R):
+    """
+    Calculate the mean theta using the given x, y, theta, and R values.
+    It uses PyTorch to speed up the process. Requires GPU for significant speedup.
+
+    Args:
+        x (numpy.ndarray): Array of x-coordinates.
+        y (numpy.ndarray): Array of y-coordinates.
+        theta (numpy.ndarray): Array of theta values.
+        R (float): Radius value.
+
+    Returns:
+        numpy.ndarray: Array of mean theta values.
+
+    """
     device = "cuda" if torch.cuda.is_available() else "cpu"
     x = torch.from_numpy(x).to(device)
     y = torch.from_numpy(y).to(device)
@@ -201,8 +254,23 @@ def calculate_mean_theta_torch(x, y, theta, R):
 
     return mean_theta_numpy
 
+
 @timem
 def calculate_mean_theta_cupy(x, y, theta, R):
+    """
+    Calculate the mean theta using Cupy.
+    GPU acceleration is required for running.
+
+    Args:
+        x (array-like): The x-coordinates.
+        y (array-like): The y-coordinates.
+        theta (array-like): The theta values.
+        R (float): The radius.
+
+    Returns:
+        array-like: The mean theta values.
+
+    """
     x = cp.array(x)
     y = cp.array(y)
     theta = cp.array(theta)
@@ -221,9 +289,24 @@ def calculate_mean_theta_cupy(x, y, theta, R):
 
     return mean_theta.get()
 
+
 @timem
 def calculate_mean_theta_conc(
-    x: np.ndarray, y: np.ndarray, theta: np.ndarray, R: float) -> np.ndarray:
+    x: np.ndarray, y: np.ndarray, theta: np.ndarray, R: float
+) -> np.ndarray:
+    """
+    Calculate the mean theta concentration for each point in the given x, y coordinates.
+    Use concurrent.futures to speed up the process.
+
+    Args:
+        x (np.ndarray): Array of x-coordinates.
+        y (np.ndarray): Array of y-coordinates.
+        theta (np.ndarray): Array of theta values.
+        R (float): Radius for determining neighbors.
+
+    Returns:
+        np.ndarray: Array of mean theta concentrations for each point.
+    """
     N = len(x)
     mean_theta = np.zeros((N, 1))
 
@@ -245,11 +328,12 @@ def calculate_mean_theta_conc(
 def calcualte_mean_theta_cython(x, y, theta, R):
     N = len(x)
     mean_theta = np.zeros((N, 1))
-    #print("before", mean_theta)
+    # print("before", mean_theta)
     flatten = mean_theta.flatten()
     cython_mean_theta.calculate_mean_theta(x.flatten(), y.flatten(), theta.flatten(), N, R, flatten)
     # print("after", flatten)
     return flatten.reshape(x.shape)
+
 
 def main():
     N = 500
@@ -264,12 +348,13 @@ def main():
         SIM = int(sys.argv[3])
     else:
         print("No parameters provided.")
-        
+
     print("Simulation used:", SIM)
     simulate_flocking(N, Nt, simulation=SIM)
 
+
 # if this file is run by itself, run a basic simulation
-if __name__== "__main__":
+if __name__ == "__main__":
     test = "cuda" if torch.cuda.is_available() else "cpu"
     if test == "cpu":
         print("ABORT, CPU WAS SELECTED")
