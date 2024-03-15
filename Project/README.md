@@ -65,7 +65,7 @@ python benchmark.py
 ```
 Instructions will be shown when running the script. Benchmarks are stored in the `benchmark` directory.
 
-### Comparision benchmark
+### Comparison benchmark
 To run the large benchmark that compares the different optimizations (plots them on a graph) run the following:
 ```
 python compare_implementation.py
